@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\GuestController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
 
@@ -20,18 +21,12 @@ Route::get('/', function () {
     return redirect(route('login'));
 });
 
-Route::get('/user-profile', function () {
-    return view('user-profile', [
-        'title' => 'User Profile',
-        'user' => [UserController::class, 'index']
-    ]);
-});
-
 // is login
 Route::prefix('dashboard')
     ->middleware(['auth:sanctum'])
     ->group(function(){
         Route::get('/', [AdminController::class, 'index'])->name('dashboard');
+        Route::get('user-profile', [UserController::class, 'edit'])->name('dashboard.profile');
     });
 
 Route::get('/hubungiadmin', [GuestController::class, 'call_admin'])->name('call-admin');

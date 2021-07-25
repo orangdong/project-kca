@@ -10,7 +10,7 @@
 											<!--end::Label-->
 											<!--begin::Col-->
 											<div class="col-lg-8">
-												<span class="fw-bolder fs-6 text-dark">Max Smith</span>
+												<span class="fw-bolder fs-6 text-dark">{{$user->name}}</span>
 											</div>
 											<!--end::Col-->
 										</div>
@@ -22,7 +22,7 @@
 											<!--end::Label-->
 											<!--begin::Col-->
 											<div class="col-lg-8 fv-row">
-												<span class="fw-bold fs-6">contohusername</span>
+												<span class="fw-bold fs-6">{{$user->username}}</span>
 											</div>
 											<!--end::Col-->
 										</div>
@@ -37,7 +37,7 @@
 											<div class="col-lg-8 d-flex align-items-center">
                                                 <span>
                                                     <form action="" method="post">
-                                                        <input type="number" name="barcode" class="form-control form-control-solid" value="087687587676" />
+                                                        <input type="number" name="barcode" class="form-control form-control-solid" value="{{$user->phone}}" />
                                                         <br><a type="submit" class="badge badge-success" >Edit</a>
                                                     </form>
 												</span>

@@ -154,9 +154,9 @@
 														<!--end::Avatar-->
 														<!--begin::Username-->
 														<div class="d-flex flex-column">
-															<div class="fw-bolder d-flex align-items-center fs-5">Nama Lengkap
+															<div class="fw-bolder d-flex align-items-center fs-5">{{Auth::user()->name}}
 															<span class="badge badge-light-success fw-bolder fs-8 px-2 py-1 ms-2">&#10004;</span></div>
-															<a href="#" class="fw-bold text-muted text-hover-primary fs-7">username</a>
+															<a href="#" class="fw-bold text-muted text-hover-primary fs-7">{{Auth::user()->username}}</a>
 														</div>
 														<!--end::Username-->
 													</div>
@@ -167,7 +167,7 @@
 												<!--end::Menu separator-->
 												<!--begin::Menu item-->
 												<div class="menu-item px-5">
-													<a href="user-profile" class="menu-link px-5">Profile</a>
+													<a href="{{ route('dashboard.profile')}}" class="menu-link px-5">Profile</a>
 												</div>
 												<!--end::Menu item-->
 												<!--begin::Menu item-->
