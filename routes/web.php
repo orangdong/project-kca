@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\GuestController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,17 +16,18 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return redirect('/login');
+    return redirect(route('login'));
 });
 
-Route::get('/hubungiadmin', function () {
-    return view('call_admin');
-});
+// is login
+Route::prefix('dashboard')
+    ->middleware(['auth:sanctum'])
+    ->group(function(){
+        Route::get('/', [AdminController::class, 'index'])->name('dashboard');
+    });
 
-Route::get('/tes', function () {
-    return view('layouts.index');
-});
+Route::get('/hubungiadmin', [GuestController::class, 'call_admin'])->name('call-admin');
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
+// Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
+//     return view('dashboard');
+// })->name('dashboard');

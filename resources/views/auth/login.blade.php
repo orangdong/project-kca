@@ -57,7 +57,18 @@
 						<!--begin::Wrapper-->
 						<div class="w-lg-500px p-10 p-lg-15 mx-auto">
 							<!--begin::Form-->
-							<form class="form w-100" novalidate="novalidate"  method="post" action="{{ route('login') }}">
+							<form class="form w-100"  method="post" action="{{ route('login') }}">
+								@if ($errors->any())
+    
+        <div class="font-medium text-red-600">{{ __('Whoops! Something went wrong.') }}</div>
+
+        <ul class="mt-3 list-disc list-inside text-sm text-red-600">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    
+@endif
 								@csrf
 								<!--begin::Heading-->
 								<div class="text-center mb-10">
@@ -66,7 +77,7 @@
 									<!--end::Title-->
 									<!--begin::Link-->
 									<div class="text-gray-400 fw-bold fs-4">Pengguna Baru?
-									<a href="/hubungiadmin" class="link-primary fw-bolder">Daftar!</a></div>
+									<a href="{{ route('call-admin') }}" class="link-primary fw-bolder">Daftar!</a></div>
 									<!--end::Link-->
 								</div>
 								<!--begin::Heading-->
@@ -78,7 +89,7 @@
 								<!--begin::Input group-->
 								<div class="fv-row mb-10">
 									<!--begin::Label-->
-									<label class="form-label fs-6 fw-bolder text-dark">{{ __('Email') }}</label>
+									<label class="form-label fs-6 fw-bolder text-dark">{{ __('Username') }}</label>
 									<!--end::Label-->
 									<!--begin::Input-->
 									<input class="form-control form-control-lg form-control-solid" type="text" name="email" autocomplete="off" :value="old('email')" required autofocus/>
