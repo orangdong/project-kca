@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\GuestController;
 use Illuminate\Support\Facades\Route;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +18,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect(route('login'));
+});
+
+Route::get('/user-profile', function () {
+    return view('user-profile', [
+        'title' => 'User Profile',
+        'user' => [UserController::class, 'index']
+    ]);
 });
 
 // is login
