@@ -11,7 +11,7 @@ class AdminController extends Controller
         $user = Auth::user();
         
         if($user->role == "admin"){
-            return redirect(route('pilih-toko'));
+            return redirect(route('navigasi'));
         }
         return view('dashboard', [
             'user' => $user,
@@ -19,7 +19,7 @@ class AdminController extends Controller
         ]);
     }
 
-    public function pilihtoko(){
+    public function navigasi(){
         $user = Auth::user();
 
         return view('admin.pilih-toko', [

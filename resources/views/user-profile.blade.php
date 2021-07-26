@@ -1,4 +1,5 @@
-<x-app-layout>
+@extends('layouts.app')
+@section('isi_halaman')
 	<!-- begin::Card -->
 	<div class="card">
 	 
@@ -89,4 +90,4 @@
 									</div>
 									<!--end::Card body-->
 	</div>
-</x-app-layout>
+@endsection('isi_halaman')
