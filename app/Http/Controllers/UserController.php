@@ -8,19 +8,30 @@ use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
     //
-    public function index(){
-        $user = Auth::user();
-
-        return view('dashboard', [
-            'user' => $user
-        ]);
-    }
 
     public function edit(){
         $user = Auth::user();
 
         return view('user-profile', [
             'title' => 'User Profile',
+            'user' => $user
+        ]);
+    }
+
+    public function riwayat(){
+        $user = Auth::user();
+
+        return view('riwayat', [
+            'title' => 'Riwayat',
+            'user' => $user
+        ]);
+    }
+
+    public function migrasi(){
+        $user = Auth::user();
+
+        return view('migrasi', [
+            'title' => 'Migrasi',
             'user' => $user
         ]);
     }

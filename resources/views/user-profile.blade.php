@@ -1,5 +1,7 @@
 <x-app-layout>
-
+	<!-- begin::Card -->
+	<div class="card">
+	 
 
 									<!--begin::Card body-->
 									<div class="card-body p-9">
@@ -86,5 +88,5 @@
 										<!--end::Input group-->
 									</div>
 									<!--end::Card body-->
-
+	</div>
 </x-app-layout>
