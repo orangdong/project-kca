@@ -21,4 +21,16 @@ class Toko extends Model
         'lokasi',
         'phone'
     ];
+
+    public function users(){
+        return $this->hasMany(User::class);
+    }
+
+    public function data_barangs(){
+        return $this->hasMany(DataBarang::class);
+    }
+
+    public function metode_pembayarans(){
+        return $this->hasMany(MetodePembayaran::class);
+    }
 }

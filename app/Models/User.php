@@ -35,6 +35,10 @@ class User extends Authenticatable
         'phone'
     ];
 
+    public function toko(){
+        return $this->belongsTo(Toko::class);
+    }
+
     /**
      * The attributes that should be hidden for arrays.
      *
