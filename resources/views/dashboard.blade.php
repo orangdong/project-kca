@@ -7,8 +7,11 @@
       <div class="card">
 	    <div class="card-body">
         <div class="mb-10">
-            <label class="required form-label">Barcode</label>
-            <input type="number" name="barcode" class="form-control form-control-solid" autocomplete="off" autofocus required />
+            <form action="{{ Route('add-basket') }}" method="post">
+              @csrf
+              <label class="required form-label">Barcode</label>
+              <input type="number" name="barcode" class="form-control form-control-solid" autocomplete="off" autofocus required />
+            </form>
         </div>
         <!-- <div class="mb-10">
             <label class="required form-label">Total Belanja</label>

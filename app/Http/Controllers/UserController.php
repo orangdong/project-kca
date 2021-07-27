@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DataBarang;
 use App\Models\BarangOrder;
 use App\Models\Keranjang;
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ class UserController extends Controller
     public function add_basket(Request $request){
         $user = Auth::user();
         $barcode = $request->input('barcode');
-        $item = BarangOrder::where(['barcode', $barcode], ['toko_id', $user->toko_id])->first();
+        $item = DataBarang::where([['barcode', $barcode], ['toko_id', $user->toko_id]])->first();
 
         if(!$item){
             return route('dashboard');
@@ -42,8 +43,7 @@ class UserController extends Controller
             Keranjang::create($data);
             return redirect('dashboard');
         }else{
-            $jumlah = $item->jumlah;
-            $jumlah += 1;
+            $jumlah = $keranjang->jumlah + 1;
 
             $update = [
                 'jumlah' => $jumlah
