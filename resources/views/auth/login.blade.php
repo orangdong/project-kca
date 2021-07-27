@@ -31,11 +31,11 @@
 						<div class="d-flex flex-row-fluid flex-column text-center p-10 pt-lg-20">
 							<!--begin::Logo-->
 							<a href="index.html" class="py-9">
-								<img alt="Logo" src="{{ asset('media/logos/favicon.ico') }}" class="h-70px" />
+								<img alt="Logo" src="{{ asset('media/logos/main-logo.svg') }}" class="h-70px" />
 							</a>
 							<!--end::Logo-->
 							<!--begin::Title-->
-							<h1 class="fw-bolder fs-2qx pb-5 pb-md-10" style="color: #986923;">Welcome to KCA Store</h1>
+							<h1 class="fw-bolder fs-2qx pb-5 pb-md-10" style="color: #986923;">Welcome to HOP Store</h1>
 							<!--end::Title-->
 							<!--begin::Description-->
 							<p class="fw-bold fs-2" style="color: #986923;">Melayani dengan

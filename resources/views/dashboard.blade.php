@@ -15,6 +15,7 @@
 	    <div class="card-body">
         <div class="mb-10">
           <form action="{{ route('add-basket')}}">
+            @csrf
             <label class="required form-label">Barcode</label>
             <input type="number" name="barcode" class="form-control form-control-solid" autocomplete="off" autofocus required />
           </form>

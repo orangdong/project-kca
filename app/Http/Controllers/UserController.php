@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BarangOrder;
 use App\Models\DataBarang;
+use App\Models\BarangOrder;
 use App\Models\Keranjang;
 use App\Models\Orderan;
 use Illuminate\Http\Request;
@@ -118,8 +118,7 @@ class UserController extends Controller
             Keranjang::create($data);
             return redirect('dashboard');
         }else{
-            $jumlah = $item->jumlah;
-            $jumlah += 1;
+            $jumlah = $keranjang->jumlah + 1;
 
             $update = [
                 'jumlah' => $jumlah
