@@ -1,25 +1,30 @@
 @extends('layouts.app')
 @section('isi_halaman')
 
+<style>
+  .edit-button:hover{
+    color: white !important;
+  }
+  
+</style>
+
 <div class="row">
     <div class="col">
       <!-- begin::Card -->
       <div class="card">
 	    <div class="card-body">
         <div class="mb-10">
+          <form action="{{ route('add-basket')}}">
             <label class="required form-label">Barcode</label>
             <input type="number" name="barcode" class="form-control form-control-solid" autocomplete="off" autofocus required />
+          </form>
         </div>
-        <!-- <div class="mb-10">
-            <label class="required form-label">Total Belanja</label>
-            <input type="hidden" name="total_harga" value="<?= "30000" ?>"/>
-            <input type="text" class="form-control form-control-solid" value="<?="Rp ".number_format("30000", 0, ".", ".") ?>" disabled required />
-        </div> -->
         <div class="mb-10">
-          <form action="" method="post"> 
+          <form action="{{ route('checkout') }}" method="post"> 
+          @csrf
           <label class="required form-label">Metode Pembayaran</label>
           <div class="w-100 ">
-						<select required class="form-select form-select-solid" data-control="select2" data-placeholder="-" data-hide-search="true" data-select2-id="select2-data-18-0jcq" tabindex="-1" aria-hidden="true">
+						<select name="metode" required class="form-select form-select-solid" data-control="select2" data-placeholder="-" data-hide-search="true" data-select2-id="select2-data-18-0jcq" tabindex="-1" aria-hidden="true">
 							<option value="" data-select2-id="select2-data-18-0jcq"></option>
 							<option value="Tunai">Tunai</option>
               <option value="GoPay">GoPay</option>
@@ -30,7 +35,7 @@
         </div>
         <div class="mb-10">
             <label class="required form-label">Debit</label>
-            <input type="text" name="uang_masuk" id="uang_masuk" class="form-control form-control-solid" autocomplete="off" required />
+            <input type="text" name="debit" id="uang_masuk" class="form-control form-control-solid" autocomplete="off" required />
         </div>
         <div class="mb-10">
             <table>
@@ -65,7 +70,9 @@
             </table>
         </div>
         <div class="mb-10">
+          <input type="hidden" id="total" name="total" value="">
             <input type="submit" class="btn btn-dark" value="Checkout"/>
+            
             </form>
         </div>
       </div>
@@ -81,7 +88,6 @@
                 <table class="table table-striped table-row-dashed table-row-gray-300 gy-7">
                     <thead>
                         <tr class="fw-bolder fs-6 text-gray-800">
-                            <th>No</th>
                             <th>Nama</th>
                             <th>Harga</th>
                             <th>Jumlah</th>
@@ -91,20 +97,29 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Tepung Terigu</td>
-                            <td>Rp 9.000/pcs</td>
-                            <td>2</td>
-                            <td><a class='plus-item badge badge-info input-group-addon' id="tomboltambah" barcode="1">+</button></td>
-                            <td><a class='minus-item input-group-addon badge badge-warning' id="tombolkurangi" barcode="2">-</button></td>
-                            <td><a class='delete-item badge badge-danger' id="tombolhapus" barcode="3">X</button></td>
-                        </tr>
+                        
+                          <?php $total = 0 ?>
+                          @forelse ($keranjang as $item)
+                          <tr>
+                          <td>{{$item->name}}</td>
+                          <td>{{$item->harga}}/{{$item->satuan}}</td>
+                          <td>{{$item->jumlah}}</td>
+                    
+                            <td><a href="{{ route('edit-basket') }}?barcode={{$item->barcode}}&action=add" class='edit-button plus-item badge badge-info input-group-addon' id="tomboltambah">+</a></td>
+                            <td><a href="{{ route('edit-basket') }}?barcode={{$item->barcode}}&action=minus" class='edit-button minus-item input-group-addon badge badge-warning' id="tombolkurangi">-</a></td>
+                            <td><a href="{{ route('edit-basket') }}?barcode={{$item->barcode}}&action=delete" class='edit-button delete-item badge badge-danger' id="tombolhapus" barcode="3">X</a></td>
+                          <?php $total = $total+($item->harga*$item->jumlah) ?>  
+                          @empty
+                              <td colspan="6" class="text-center">Keranjang kosong</td>
+                            </tr>
+                          @endforelse
+                            
+                        
                     </tbody>
                     <tfoot>
                       <tr>
                         <td colspan="4">Total Belanja</td>
-                        <td colspan="3"><?= "Rp ".number_format("30000", 0, ".", ".") ?></td>
+                        <td colspan="2"><?= "Rp ".number_format($total, 0, ".", ".") ?></td>
                       </tr>
                     </tfoot>
                 </table>
@@ -118,6 +133,7 @@
 
 <script type="text/javascript">
 
+document.getElementById('total').value = <?= $total ?>
 // Reset
 function reset(){
   document.getElementById("uang_masuk").value = 0;

@@ -29,6 +29,8 @@ Route::prefix('dashboard')
     {   
         Route::get('/', [UserController::class, 'index'])->name('dashboard');
         Route::post('/', [UserController::class, 'add_basket'])->name('add-basket');
+        Route::get('keranjang', [UserController::class, 'edit_basket'])->name('edit-basket');
+        Route::post('checkout', [UserController::class, 'checkout'])->name('checkout');
         
         Route::middleware(['isAdmin'])->group(function(){
             Route::get('edit-barang', [AdminController::class, 'editbarang'])->name('edit-barang');

@@ -17,6 +17,7 @@ class CreateKeranjangsTable extends Migration
             $table->id();
             $table->foreignId('toko_id')->constrained('tokos')->onDelete('cascade');
             $table->bigInteger('barcode');
+            $table->integer('barang_id');
             $table->string('name');
             $table->string('satuan');
             $table->bigInteger('harga');

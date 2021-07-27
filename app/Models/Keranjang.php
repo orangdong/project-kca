@@ -17,6 +17,7 @@ class Keranjang extends Model
     protected $fillable = [
         'toko_id',
         'barcode',
+        'barang_id',
         'name',
         'satuan',
         'harga',
