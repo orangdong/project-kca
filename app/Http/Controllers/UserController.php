@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Toko;
 use App\Models\DataBarang;
 use App\Models\BarangOrder;
 use App\Models\Keranjang;
@@ -23,6 +24,22 @@ class UserController extends Controller
             'user' => $user,
             'title' => 'Dashboard',
             'keranjang' => $keranjang
+        ]);
+    }
+
+    public function struk(Request $request){
+        $user = Auth::user();
+        $orderan_id = $request->input('orderan_id');
+        $orderan = Orderan::where('id',$orderan_id)->with('barang_orders')->first();
+        $toko = Toko::where('id',$user->toko_id)->first();
+        
+        if($orderan->user_id !== $user->id or !$orderan_id){
+            return redirect('dashboard');
+        }
+
+        return view('struk',[
+            'toko' => $toko,
+            'orderan' => $orderan
         ]);
     }
 
@@ -61,7 +78,7 @@ class UserController extends Controller
         }
         Keranjang::where('toko_id', $user->toko_id)->delete();
 
-        return redirect('dashboard');
+        return redirect('dashboard/struk?orderan_id='.$order->id);
     }
 
     public function edit_basket(Request $request){

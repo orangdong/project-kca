@@ -31,6 +31,7 @@ Route::prefix('dashboard')
         Route::post('/', [UserController::class, 'add_basket'])->name('add-basket');
         Route::get('keranjang', [UserController::class, 'edit_basket'])->name('edit-basket');
         Route::post('checkout', [UserController::class, 'checkout'])->name('checkout');
+        Route::get('struk', [UserController::class, 'struk'])->name('struk');
         
         Route::middleware(['isAdmin'])->group(function(){
             Route::get('edit-barang', [AdminController::class, 'editbarang'])->name('edit-barang');

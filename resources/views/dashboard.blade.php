@@ -14,7 +14,7 @@
       <div class="card">
 	    <div class="card-body">
         <div class="mb-10">
-          <form action="{{ route('add-basket')}}">
+          <form action="{{ route('add-basket')}}" method="post">
             @csrf
             <label class="required form-label">Barcode</label>
             <input type="number" name="barcode" class="form-control form-control-solid" autocomplete="off" autofocus required />
@@ -43,7 +43,7 @@
             <tbody>
                 <tr>
                     <td>
-                    <a class="badge mb-3 badge-warning" href="#">Uang Pas</a>
+                    <a class="badge mb-3 badge-warning" href="#" id="uang_pas">Uang Pas</a>
                     <a class="badge badge-info" onclick="reset()" href="#">Reset</a>
                     </td>
                     <td>
@@ -134,7 +134,12 @@
 
 <script type="text/javascript">
 
-document.getElementById('total').value = <?= $total ?>
+document.getElementById('total').value = <?= $total ?>;
+
+document.getElementById("uang_pas").addEventListener('click',function(){
+  document.getElementById("uang_masuk").value = <?= $total ?>;
+})
+
 // Reset
 function reset(){
   document.getElementById("uang_masuk").value = 0;
