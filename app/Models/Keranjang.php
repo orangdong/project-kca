@@ -18,6 +18,7 @@ class Keranjang extends Model
         'toko_id',
         'barcode',
         'name',
+        'satuan',
         'harga',
         'jumlah'
     ];

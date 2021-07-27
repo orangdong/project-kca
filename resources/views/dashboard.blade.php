@@ -37,27 +37,27 @@
             <tbody>
                 <tr>
                     <td>
-                    <a class="badge badge-warning" href="#">Uang Pas</a>
+                    <a class="badge mb-3 badge-warning" href="#">Uang Pas</a>
                     <a class="badge badge-info" onclick="reset()" href="#">Reset</a>
                     </td>
                     <td>
-                    <a class="badge badge-danger" style="color:#ffffff;" onclick="tambah(100000)" href="#">+ 100K</a>
+                    <a class="badge mb-3 badge-danger" style="color:#ffffff;" onclick="tambah(100000)" href="#">+ 100K</a>
                     <a class="badge badge-primary" style="color:#ffffff;"  onclick="tambah(50000)" href="#">+ 50K</a>
                     </td>
                     <td>
-                    <a class="badge badge-success" style="color:#ffffff;" onclick="tambah(20000)" href="#">+ 20K</a>
+                    <a class="badge mb-3 badge-success" style="color:#ffffff;" onclick="tambah(20000)" href="#">+ 20K</a>
                     <a class="badge" style="background-color:#5c0099;color:#ffffff;" onclick="tambah(10000)" href="#">+ 10K</a>
                     </td>
                     <td>
-                    <a class="badge" style="background-color:#ab5e00;color:#ffffff;" onclick="tambah(5000)" href="#">+ 5K</a>
+                    <a class="badge mb-3" style="background-color:#ab5e00;color:#ffffff;" onclick="tambah(5000)" href="#">+ 5K</a>
                     <a class="badge" style="background-color:#8f8f8f;color:#ffffff;" onclick="tambah(2000)" href="#">+ 2K</a>
                     </td>
                     <td>
-                    <a class="badge" style="background-color:#014d00;color:#ffffff;" onclick="tambah(1000)" href="#">+ 1K</a>
+                    <a class="badge mb-3" style="background-color:#014d00;color:#ffffff;" onclick="tambah(1000)" href="#">+ 1K</a>
                     <a class="badge" style="background-color:#dbdbdb;color:#000000;" onclick="tambah(500)" href="#">+ 500</a>
                     </td>
                     <td>
-                    <a class="badge" style="background-color:#919191;color:#ffffff;" onclick="tambah(200)" href="#">+ 200</a>
+                    <a class="badge mb-3" style="background-color:#919191;color:#ffffff;" onclick="tambah(200)" href="#">+ 200</a>
                     <a class="badge" style="background-color:#000000;color:#ffffff;" onclick="tambah(100)" href="#">+ 100</a>
                     </td>
                 </tr>

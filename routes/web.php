@@ -27,8 +27,8 @@ Route::prefix('dashboard')
     ->middleware(['auth:sanctum'])
     ->group(function()
     {   
-        Route::get('/', [AdminController::class, 'index'])->name('dashboard');
-        
+        Route::get('/', [UserController::class, 'index'])->name('dashboard');
+        Route::post('/', [UserController::class, 'add_basket'])->name('add-basket');
         
         Route::middleware(['isAdmin'])->group(function(){
             Route::get('edit-barang', [AdminController::class, 'editbarang'])->name('edit-barang');
