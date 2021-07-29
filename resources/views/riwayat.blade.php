@@ -4,11 +4,21 @@
 <div class="card card-body">
 <h2>Untuk Toko A</h2>
     <br>
+    <form action="">
+        <label class="form-label">Tanggal Observasi</label>
+        <div class="input-group mb-3">
+            <input class="form-control form-control-solid" placeholder="Pick date rage" type="date" id="kt_daterangepicker_3"/>
+            <div class="input-group-append">
+                <input type="submit" class="btn btn-success" value="Submit"/>
+            </div>
+        </div>
+    </form>
+<br>
                 <div class="card">
                     <div class="card-header" style="background-color:#dee3ff;" id="heading">
                         
                         <button class="btn btn-link" style="color:#000000;" data-toggle="collapse" data-target="#collapse $order_id" aria-expanded="true" aria-controls="collapseOne">
-                            Kode Order:  123 // Username:  kasir1
+                            ID Order: 567 // Kasir:  Agung Paramitha
                         </button>
                         
 
@@ -44,5 +54,15 @@
                     </div>
                 </div>
 </div>
+
+<script>
+$("#kt_daterangepicker_3").daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true,
+        minYear: 1990,
+        maxYear: parseInt(moment().format("YYYY"),10)
+    }
+);
+</script>
 
 @endsection('isi_halaman')

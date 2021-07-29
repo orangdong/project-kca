@@ -30,7 +30,7 @@
 						<!--begin::Content-->
 						<div class="d-flex flex-row-fluid flex-column text-center p-10 pt-lg-20">
 							<!--begin::Logo-->
-							<a href="index.html" class="py-9">
+							<a href="#" class="py-9">
 								<img alt="Logo" src="{{ asset('media/logos/main-logo.svg') }}" class="h-70px" />
 							</a>
 							<!--end::Logo-->
@@ -73,7 +73,7 @@
 								<!--begin::Heading-->
 								<div class="text-center mb-10">
 									<!--begin::Title-->
-									<h1 class="text-dark mb-3">Login to KCA Store</h1>
+									<h1 class="text-dark mb-3">Login to House of Phyto</h1>
 									<!--end::Title-->
 									<!--begin::Link-->
 									<div class="text-gray-400 fw-bold fs-4">Pengguna Baru?

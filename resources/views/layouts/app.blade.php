@@ -14,7 +14,7 @@
 		<!--begin::Global Stylesheets Bundle(used by all pages)-->
 		<link href="{{ asset('plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
 		<link href="{{ asset('css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
-		<link rel="icon" href="{{ asset('media/logos/logo-mm.png') }}" type="image">
+		<link rel="icon" href="{{ asset('media/logos/main-logo.svg') }}" type="image">
 		<!--end::Global Stylesheets Bundle-->
         <script type="text/javascript" src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
 	</head>

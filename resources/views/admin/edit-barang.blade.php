@@ -28,6 +28,9 @@
                         <input type="submit" class="btn btn-primary" value="Search by name"/>
                     </div>
                 </form>
+                <div class="mb-10">
+                    <a href="#" class="btn btn-info">Add New Item</a>
+                </div>
             </div>
         </div>
         <div class="col">

@@ -7,9 +7,7 @@
 
     <div class="card card-body" style="font-size:12px;width:150px;">
         <center>
-            
-            <b style="font-size:14px">House of Phyto Organic</b>
-            <br><span style="font-size:12px">-PT Merpati Mahardika-</span><br><br>
+            <img style="width:auto;" src="{{ asset('media/logos/main-logo.svg') }}"><br><br>
             <span onclick="window.print()">Ruko L'Grande<br>Jakarta Selatan</span><br>
             ------------------------------------
         </center>
