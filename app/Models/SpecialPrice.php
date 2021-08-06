@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class DataBarang extends Model
+class SpecialPrice extends Model
 {
     use HasFactory;
     use SoftDeletes;
@@ -17,12 +17,8 @@ class DataBarang extends Model
     ];
 
     protected $fillable = [
-        'toko_id',
-        'barcode',
-        'name',
-        'satuan',
-        'harga_satuan',
-        'stok'
+        'data_barang_id',
+        'special_price',
+        'valid_until'
     ];
-
 }

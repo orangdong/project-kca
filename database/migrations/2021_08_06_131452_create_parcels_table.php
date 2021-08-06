@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDataBarangsTable extends Migration
+class CreateParcelsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,13 @@ class CreateDataBarangsTable extends Migration
      */
     public function up()
     {
-        Schema::create('data_barangs', function (Blueprint $table) {
+        Schema::create('parcels', function (Blueprint $table) {
             $table->id();
             $table->foreignId('toko_id')->constrained('tokos')->onDelete('cascade');
             $table->bigInteger('barcode');
             $table->string('name');
-            $table->string('satuan')->nullable();
             $table->bigInteger('harga_satuan');
             $table->integer('stok');
-
-            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -34,6 +31,6 @@ class CreateDataBarangsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('data_barangs');
+        Schema::dropIfExists('parcels');
     }
 }

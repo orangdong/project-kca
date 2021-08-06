@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class DataBarang extends Model
+class DataGudang extends Model
 {
     use HasFactory;
     use SoftDeletes;
@@ -17,12 +17,12 @@ class DataBarang extends Model
     ];
 
     protected $fillable = [
-        'toko_id',
         'barcode',
         'name',
         'satuan',
         'harga_satuan',
-        'stok'
+        'stok',
+        'buffer',
+        'expired_date'
     ];
-
 }
