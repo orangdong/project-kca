@@ -9,7 +9,7 @@
 </style>
 
 <div class="row">
-    <div class="col">
+    <div class="col-5">
       <!-- begin::Card -->
       <div class="card">
 	    <div class="card-body">
@@ -80,42 +80,106 @@
       </div>
       <!-- end::Card -->
     </div>
-    <div class="col">
+    <div class="col-7">
       <!-- begin::Card -->
       <div class="card">
 	    <div class="card-body">
-        <div class="table-responsive">
-            <div class="">
+            <div class="table-responsive">
                 <table class="table table-striped table-row-dashed table-row-gray-300 gy-7">
                     <thead>
                         <tr class="fw-bolder fs-6 text-gray-800">
                             <th>Nama</th>
                             <th>Harga</th>
-                            <th>Jumlah</th>
-                            <th>+</th>
-                            <th>-</th>
-                            <th>Hapus</th>
+                            <th>Qty</th>
+                            <th style="width:160px;">Edit</th>
+                            <th>Promo</th>
                         </tr>
                     </thead>
                     <tbody>
-                        
-                          <?php $total = 0 ?>
-                          @forelse ($keranjang as $item)
-                          <tr>
-                          <td>{{$item->name}}</td>
-                          <td>{{$item->harga}}/{{$item->satuan}}</td>
-                          <td>{{$item->jumlah}}</td>
                     
-                            <td><a href="{{ route('edit-basket') }}?barcode={{$item->barcode}}&action=add" class='edit-button plus-item badge badge-info input-group-addon' id="tomboltambah">+</a></td>
-                            <td><a href="{{ route('edit-basket') }}?barcode={{$item->barcode}}&action=minus" class='edit-button minus-item input-group-addon badge badge-warning' id="tombolkurangi">-</a></td>
-                            <td><a href="{{ route('edit-basket') }}?barcode={{$item->barcode}}&action=delete" class='edit-button delete-item badge badge-danger' id="tombolhapus" barcode="3">X</a></td>
-                          <?php $total = $total+($item->harga*$item->jumlah) ?>  
-                          @empty
-                              <td colspan="6" class="text-center">Keranjang kosong</td>
-                            </tr>
-                          @endforelse
+                      <?php $total = 0 ?>
+                      @forelse ($keranjang as $item)
+                      <tr>
+                          <td>{{$item->name}}</td>
+                          <td>{{number_format($item->harga, 0, ".", ".")}}/{{$item->satuan}}</td>
+                          <td>
+                            {{$item->jumlah}}
+                            <!--
+                            <a href="{{ route('edit-basket') }}?barcode={{$item->barcode}}&action=add" class='edit-button plus-item badge badge-info input-group-addon'>+</a>
+                            <a href="{{ route('edit-basket') }}?barcode={{$item->barcode}}&action=minus" class='edit-button minus-item input-group-addon badge badge-warning'>-</a>
+                            <a href="{{ route('edit-basket') }}?barcode={{$item->barcode}}&action=delete" class='edit-button delete-item badge badge-danger'>X</a>
+                            -->
+                          </td>
+                          <td>
+                            <form action="{{ route('edit-jumlah') }}" method="post">
+                              @csrf
+                              <div class="input-group">
+                                <input type="number" class="form-control" name="jumlah" value="{{$item->jumlah}}"/>
+                                <input type="hidden" name="keranjang_id" value="{{$item->id}}"/>
+                                <input type="submit" class="btn btn-sm btn-primary" style="width:5px;" value="U">
+                                <a href="{{ route('edit-basket') }}?barcode={{$item->barcode}}&action=delete" class="btn btn-sm btn-danger" style="width:5px;">X</a>
+                              </div>
+                            </form>
+                          </td>
+                          <td style="word-break: break-all;">
                             
-                        
+                            @if($diskon->where('data_barang_id',$item->data_barang_id)->count() > 0)
+                              @foreach($diskon->where('data_barang_id',$item->data_barang_id) as $d)
+                                {{ $d->diskon."%" }}
+                              @endforeach
+                            @elseif($special_price->where('data_barang_id',$item->data_barang_id)->count() > 0)
+                              @foreach($special_price->where('data_barang_id',$item->data_barang_id) as $s)
+                                {{ number_format($s->special_price, 0, ".", ".") }}
+                              @endforeach
+                            @elseif($item_get->where('item_get_id',$item->data_barang_id)->count() > 0) <!--barang di keranjang ini, ada nggak di tabel BuyGet? -->
+                              @foreach($item_get->where('item_get_id',$item->data_barang_id) as $i) <!-- dari tabel BuyGet -->
+                                <!-- begin::Buy Get -->
+                                  @php $tinjau_keranjang = $keranjang->where('data_barang_id',$i->item_get_id) @endphp <!-- table Keranjang -->
+                                  <!-- Nyari item gratisan di table Keranjang -->
+                                  @foreach($tinjau_keranjang as $tk)
+                                    <!-- $i->buy Jumlah barang yg hrs dibeli ATURAN PROMO-->
+                                    <!-- $i->data_barang_id Barang apa yg hrs dibeli ATURAN PROMO-->
+
+                                    @php $barang_dibeli_keranjang = $keranjang->where('data_barang_id',$i->data_barang_id) @endphp
+                                    <!-- Apakah barang ATURAN PROMO ada di keranjang -->
+                                    @foreach($barang_dibeli_keranjang as $bdk)
+                                       <!-- $bdk->jumlah Jumlah brg ATURAN PROMO di keranjang -->
+                                      @if($bdk->jumlah%$i->buy == 0) <!-- Kalo belinya sesuai ATURAN PROMO -->
+                                        @php $sisa_bagi = $bdk->jumlah % $tk->jumlah;
+                                        $hasil_bagi = ($bdk->jumlah - $sisa_bagi) / $tk->jumlah; @endphp
+
+                                        @if($hasil_bagi > 0)
+                                          @if($sisa_bagi == 0)
+                                            @php $pesan_promo = "free" @endphp
+                                          @else
+                                            @php $pesan_promo  = "free & no" @endphp
+                                          @endif
+                                        @else
+                                          @php $pesan_promo  = "free & no" @endphp
+                                        @endif
+
+                                      @elseif($bdk->jumlah > $i->buy)
+                                        @php $pesan_promo = "Free & No" @endphp
+                                      @endif
+
+                                    @endforeach
+
+                                  @endforeach
+                                <!-- end::BuyGet -->
+                                @if(isset($pesan_promo))
+                                  {{ $pesan_promo }}
+                                @endif
+                              @endforeach
+                            @endif
+                          </td>
+                      </tr>
+                      <?php $total = $total+($item->harga*$item->jumlah) ?>  
+                      @empty
+                        <tr>
+                          <td colspan="6" class="text-center">Keranjang kosong</td>
+                        </tr>
+                      @endforelse
+                                  
                     </tbody>
                     <tfoot>
                       <tr>
@@ -125,7 +189,6 @@
                     </tfoot>
                 </table>
             </div>
-        </div>
       </div>
       </div>
       <!-- end::Card -->

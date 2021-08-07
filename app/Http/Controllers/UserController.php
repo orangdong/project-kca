@@ -7,6 +7,9 @@ use App\Models\DataBarang;
 use App\Models\BarangOrder;
 use App\Models\Keranjang;
 use App\Models\Orderan;
+use App\Models\Diskon;
+use App\Models\SpecialPrice;
+use App\Models\BuyGet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,11 +22,18 @@ class UserController extends Controller
             return redirect(route('navigasi'));
         }
         $keranjang = Keranjang::where('toko_id', $user->toko_id)->get();
+
+        $diskon = Diskon::get();
+        $special_price = SpecialPrice::get();
+        $item_get = BuyGet::get();
         
         return view('dashboard', [
             'user' => $user,
             'title' => 'Dashboard',
-            'keranjang' => $keranjang
+            'keranjang' => $keranjang,
+            'diskon' => $diskon,
+            'special_price' => $special_price,
+            'item_get' => $item_get
         ]);
     }
 
@@ -67,7 +77,7 @@ class UserController extends Controller
         foreach($keranjang as $k){
             $insert_barang_order = [
                 'orderan_id' => $order->id,
-                'barang_id' => $k->barang_id,
+                'data_barang_id' => $k->data_barang_id,
                 'name' => $k->name,
                 'harga_satuan' => $k->harga,
                 'jumlah' => $k->jumlah,
@@ -97,17 +107,31 @@ class UserController extends Controller
                 'jumlah' => $jumlah
             ];
             $keranjang->update($update);
+            return redirect('dashboard')->with('success','Tambah barang berhasil');
         }elseif($action == 'minus'){
             $jumlah = $keranjang->jumlah - 1;
             $update = [
                 'jumlah' => $jumlah
             ];
             $keranjang->update($update);
+            return redirect('dashboard')->with('warning','Kurangi barang berhasil');
         }elseif($action == 'delete'){
             $keranjang->delete();
+            return redirect('dashboard')->with('warning','Hapus barang berhasil');
         }
-
+        
         return redirect('dashboard');
+    }
+
+    public function edit_jumlah(Request $request){
+        $user = Auth::user();
+        $keranjang_id = $request->input('keranjang_id');
+        $jumlah = $request->input('jumlah');
+        Keranjang::whereid($keranjang_id)->update([
+            'jumlah' => $jumlah
+        ]);
+
+        return redirect('dashboard')->with('success','Edit jumlah berhasil');
     }
 
     public function add_basket(Request $request){
@@ -125,7 +149,7 @@ class UserController extends Controller
             $data = [
                 'toko_id' => $item->toko_id,
                 'barcode' => $barcode,
-                'barang_id'=> $item->id,
+                'data_barang_id'=> $item->id,
                 'name' => $item->name,
                 'satuan' => $item->satuan,
                 'harga' => $item->harga_satuan,
@@ -133,7 +157,7 @@ class UserController extends Controller
             ];
 
             Keranjang::create($data);
-            return redirect('dashboard');
+            return redirect('dashboard')->with('success','Barang baru berhasil');
         }else{
             $jumlah = $keranjang->jumlah + 1;
 
@@ -143,7 +167,7 @@ class UserController extends Controller
 
             $keranjang->update($update);
 
-            return redirect('dashboard');
+            return redirect('dashboard')->with('success','Tambah barang berhasil');
         }
         
         

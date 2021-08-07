@@ -17,10 +17,22 @@ class Keranjang extends Model
     protected $fillable = [
         'toko_id',
         'barcode',
-        'barang_id',
+        'data_barang_id',
         'name',
         'satuan',
         'harga',
         'jumlah'
     ];
+
+    public function diskon(){
+        return $this->belongsTo(Diskon::class);
+    }
+
+    public function special_price(){
+        return $this->belongsTo(SpecialPrice::class);
+    }
+
+    public function buy_get(){
+        return $this->belongsTo(BuyGet::class);
+    }
 }

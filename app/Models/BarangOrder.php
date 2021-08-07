@@ -16,7 +16,7 @@ class BarangOrder extends Model
 
     protected $fillable = [
         'orderan_id',
-        'barang_id',
+        'data_barang_id',
         'name',
         'harga_satuan',
         'jumlah',

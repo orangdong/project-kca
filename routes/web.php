@@ -30,6 +30,7 @@ Route::prefix('dashboard')
         Route::get('/', [UserController::class, 'index'])->name('dashboard');
         Route::post('/', [UserController::class, 'add_basket'])->name('add-basket');
         Route::get('keranjang', [UserController::class, 'edit_basket'])->name('edit-basket');
+        Route::post('edit-jumlah', [UserController::class, 'edit_jumlah'])->name('edit-jumlah');
         Route::post('checkout', [UserController::class, 'checkout'])->name('checkout');
         Route::get('struk', [UserController::class, 'struk'])->name('struk');
         

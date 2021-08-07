@@ -16,7 +16,7 @@ class CreateBarangOrdersTable extends Migration
         Schema::create('barang_orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('orderan_id')->constrained('orderans')->onDelete('cascade');
-            $table->integer('barang_id');
+            $table->integer('data_barang_id');
             $table->string('name');
             $table->bigInteger('harga_satuan');
             $table->bigInteger('jumlah');

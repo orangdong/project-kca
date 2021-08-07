@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Member extends Model
+class HistoryBuyGet extends Model
 {
     use HasFactory;
 
@@ -15,11 +15,9 @@ class Member extends Model
     ];
 
     protected $fillable = [
-        'kode_member',
-        'name',
-        'phone',
-        'alamat',
-        'nik',
-        'email'
+        'barang_order_id',
+        'buy',
+        'get',
+        'item_get_id'
     ];
 }
