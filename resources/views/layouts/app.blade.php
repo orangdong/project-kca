@@ -54,6 +54,15 @@
 									<!--end::Breadcrumb-->
 								</div>
 								<!--end::Page title-->
+								<!--begin::Actions-->
+								<div class="d-flex align-items-center py-1">
+									<!--begin::Wrapper-->
+									<div class="me-4">
+										@yield('isi_action')
+									</div>
+									<!--end::Wrapper-->
+								</div>
+								<!--end::Actions-->
 							</div>
 							<!--end::Container-->
 						</div>
@@ -62,7 +71,7 @@
 						<!--begin::Post-->
 						<div class="post d-flex flex-column-fluid" id="kt_post">
 							<!--begin::Container-->
-							<div class="container">
+							<div class="container" id="kt_content_container">
 								<!-- begin::Page Heading -->
 								@if (isset($header))
 									<header class="bg-white shadow">

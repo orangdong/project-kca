@@ -34,25 +34,6 @@
             </form>
         </tr>
     </tbody>
-    <tfoot>
-        <tr>
-            <td>Add</td>
-            <form action="/tambah_user" method="post">
-                <td><input type="text" name="username" class="form-control" /></td>
-                <td><input type="number" name="phone" class="form-control" /></td>
-                <td>
-                    <select required class="form-select form-select-solid" data-control="select2" data-placeholder="Role" data-hide-search="true" data-select2-id="select2-data-18-0jcq" tabindex="-1" aria-hidden="true">
-                        <option value="" data-select2-id="select2-data-18-0jcq"></option>
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                </td>
-                <td><input class="form-control form-control-lg" type="password" name="password_baru" required autocomplete="current-password" /></td>
-                <td><input class="form-control form-control-lg" type="password" name="confirm_password_baru" required autocomplete="current-password" /></td>
-                <td><a type="submit" class="badge badge-primary" >Tambah User</a></td>
-            </form>
-        </tr>
-    </tfoot>
 </table>
 </div>
 
@@ -77,3 +58,8 @@
 </script>
 
 @endsection('isi_halaman')
+
+@section('isi_action')
+<a type="submit" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_new_target">Tambah User</a>
+<!-- Modal -->
+@endsection('isi_action')
