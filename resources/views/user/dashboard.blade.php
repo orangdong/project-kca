@@ -149,7 +149,7 @@
                                         $hasil_bagi = ($bdk->jumlah - $sisa_bagi) / $tk->jumlah; @endphp
 
                                         @if($hasil_bagi > 0)
-                                          @if($sisa_bagi == 0)
+                                          @if($sisa_bagi == 0 && $bdk->jumlah !== $tk->jumlah)
                                             @php $pesan_promo = "free" @endphp
                                           @else
                                             @php $pesan_promo  = "free & no" @endphp

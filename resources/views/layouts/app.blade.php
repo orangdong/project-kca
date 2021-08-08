@@ -144,13 +144,13 @@
 				toastr.success("{{ session('success') }}");
 		@endif
 
-		@if(Session::has('error'))
+		@if(Session::has('danger'))
 		toastr.options =
 		{
 			"closeButton" : true,
 			"progressBar" : true
 		}
-				toastr.error("{{ session('error') }}");
+				toastr.error("{{ session('danger') }}");
 		@endif
 
 		@if(Session::has('info'))
