@@ -18,16 +18,13 @@ class UserController extends Controller
     public function index(){
         $user = Auth::user();
         
-        if($user->role == "admin"){
-            return redirect(route('navigasi'));
-        }
         $keranjang = Keranjang::where('toko_id', $user->toko_id)->get();
 
         $diskon = Diskon::get();
         $special_price = SpecialPrice::get();
         $item_get = BuyGet::get();
         
-        return view('dashboard', [
+        return view('user.dashboard', [
             'user' => $user,
             'title' => 'Dashboard',
             'keranjang' => $keranjang,
@@ -47,7 +44,7 @@ class UserController extends Controller
             return redirect('dashboard');
         }
 
-        return view('struk',[
+        return view('user.struk',[
             'toko' => $toko,
             'orderan' => $orderan
         ]);
@@ -176,7 +173,7 @@ class UserController extends Controller
     public function edit(){
         $user = Auth::user();
 
-        return view('user-profile', [
+        return view('user.user-profile', [
             'title' => 'User Profile',
             'user' => $user
         ]);
@@ -185,7 +182,7 @@ class UserController extends Controller
     public function riwayat(){
         $user = Auth::user();
 
-        return view('riwayat', [
+        return view('user.riwayat', [
             'title' => 'Riwayat',
             'user' => $user
         ]);
@@ -194,7 +191,7 @@ class UserController extends Controller
     public function migrasi(){
         $user = Auth::user();
 
-        return view('migrasi', [
+        return view('user.migrasi', [
             'title' => 'Migrasi',
             'user' => $user
         ]);

@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
 use App\Http\Middleware\isAdmin;
+use App\Http\Middleware\isUser;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,12 +28,6 @@ Route::prefix('dashboard')
     ->middleware(['auth:sanctum'])
     ->group(function()
     {   
-        Route::get('/', [UserController::class, 'index'])->name('dashboard');
-        Route::post('/', [UserController::class, 'add_basket'])->name('add-basket');
-        Route::get('keranjang', [UserController::class, 'edit_basket'])->name('edit-basket');
-        Route::post('edit-jumlah', [UserController::class, 'edit_jumlah'])->name('edit-jumlah');
-        Route::post('checkout', [UserController::class, 'checkout'])->name('checkout');
-        Route::get('struk', [UserController::class, 'struk'])->name('struk');
         
         Route::middleware(['isAdmin'])->group(function(){
             Route::get('edit-barang', [AdminController::class, 'editbarang'])->name('edit-barang');
@@ -42,10 +37,20 @@ Route::prefix('dashboard')
             Route::get('navigasi', [AdminController::class, 'navigasi'])->name('navigasi');
             Route::get('revenue', [AdminController::class, 'revenue'])->name('revenue');
         });
+
+        Route::middleware(['isUser'])->group(function(){
+            Route::get('/', [UserController::class, 'index'])->name('dashboard');
+            Route::post('/', [UserController::class, 'add_basket'])->name('add-basket');
+            Route::get('keranjang', [UserController::class, 'edit_basket'])->name('edit-basket');
+            Route::post('edit-jumlah', [UserController::class, 'edit_jumlah'])->name('edit-jumlah');
+            Route::post('checkout', [UserController::class, 'checkout'])->name('checkout');
+            Route::get('struk', [UserController::class, 'struk'])->name('struk');
+            Route::get('riwayat', [UserController::class, 'riwayat'])->name('riwayat');
+            Route::get('migrasi', [UserController::class, 'migrasi'])->name('migrasi');
+        });
         
         Route::get('user-profile', [UserController::class, 'edit'])->name('dashboard.profile');
-        Route::get('riwayat', [UserController::class, 'riwayat'])->name('riwayat');
-        Route::get('migrasi', [UserController::class, 'migrasi'])->name('migrasi');
+        
     });
 
 Route::get('/hubungiadmin', [GuestController::class, 'call_admin'])->name('call-admin');
