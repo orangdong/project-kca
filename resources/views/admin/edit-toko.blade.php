@@ -32,7 +32,7 @@
         </div>
       </div>
     </div>
-  </div>
+</div>
 <div class="card card-body">
     <table class="table table-row-dashed table-row-gray-300 gy-7">
         <thead>
