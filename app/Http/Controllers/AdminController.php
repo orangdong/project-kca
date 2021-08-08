@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Toko;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -64,11 +65,29 @@ class AdminController extends Controller
         ]);
     }
 
+    public function edit(Request $request, $id){
+        $data = $request->all();
+        $toko = Toko::where('id', $id)->first();
+
+        $toko->update($data);
+        return redirect(route('edit-toko'))->with('success','Edit toko berhasil');
+
+    }
+
+    public function insert(Request $request){
+        $data = $request->all();
+
+        Toko::create($data);
+        return redirect(route('edit-toko'))->with('success','Create toko berhasil');
+    }
+
     public function edittoko(){
         $user = Auth::user();
+        $tokos = Toko::all();
 
         return view('admin.edit-toko', [
             'user' => $user,
+            'tokos' => $tokos,
             'title' => 'Edit Toko'
         ]);
     }

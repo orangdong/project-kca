@@ -38,9 +38,11 @@ Route::prefix('dashboard')
             Route::get('edit-barang', [AdminController::class, 'editbarang'])->name('edit-barang');
             Route::get('edit-metode', [AdminController::class, 'editmetode'])->name('edit-metode');
             Route::get('edit-toko', [AdminController::class, 'edittoko'])->name('edit-toko');
-            Route::get('edit-user', [AdminController::class, 'edituser'])->name('edit-toko');
+            Route::get('edit-user', [AdminController::class, 'edituser'])->name('edit-user');
             Route::get('navigasi', [AdminController::class, 'navigasi'])->name('navigasi');
             Route::get('revenue', [AdminController::class, 'revenue'])->name('revenue');
+            Route::post('edit-toko/{id}', [AdminController::class, 'edit'])->name('edit-toko-form');
+            Route::post('insert-toko', [AdminController::class, 'insert'])->name('insert-toko-form');
         });
         
         Route::get('user-profile', [UserController::class, 'edit'])->name('dashboard.profile');
