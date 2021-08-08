@@ -10,21 +10,11 @@ class AdminController extends Controller
 {
     public function index(){
         $user = Auth::user();
-        
-        if($user->role == "admin"){
-            return redirect(route('navigasi'));
-        }
-        return view('dashboard', [
-            'user' => $user,
-            'title' => 'Dashboard'
-        ]);
-    }
-
-    public function navigasi(){
-        $user = Auth::user();
+        $tokos = Toko::all();
 
         return view('admin.pilih-toko', [
             'user' => $user,
+            'tokos' => $tokos,
             'title' => 'Navigasi'
         ]);
     }
