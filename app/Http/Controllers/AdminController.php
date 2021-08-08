@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Actions\Fortify\PasswordValidationRules;
+use App\Models\MetodePembayaran;
 use App\Models\User;
 
 class AdminController extends Controller
@@ -33,11 +34,20 @@ class AdminController extends Controller
         ]);
     }
 
-    public function editmetode(){
+    public function editmetode(Request $request){
+        $id = $request->input('id');
+        $toko = Toko::where('id', $id)->first();
+        $metodes = MetodePembayaran::where('toko_id', $id)->get();
+
+        if(!$id || !$toko){
+            return redirect(route('navigasi'))->with('danger', 'invalid toko');
+        }
         $user = Auth::user();
 
         return view('admin.edit-metode', [
             'user' => $user,
+            'toko' => $toko,
+            'metodes' => $metodes,
             'title' => 'Edit Metode'
         ]);
     }
@@ -92,6 +102,21 @@ class AdminController extends Controller
 
         $user->update($data);
         return redirect(route('edit-user').'?id='.$request->toko_id)->with('success','Ubah data user berhasil');
+    }
+
+    public function delete_metode(Request $request,$id){
+        $toko_id = $request->input('toko_id');
+        MetodePembayaran::where('id', $id)->delete();
+
+        return redirect(route('edit-metode').'?id='.$toko_id)->with('success','Delete metode berhasil');
+    }
+
+    public function insert_metode(Request $request, $id){
+        $data = $request->all();
+
+        MetodePembayaran::create($data);
+
+        return redirect(route('edit-metode').'?id='.$id)->with('success','Insert metode berhasil');
     }
 
     public function edit_user_password(Request $request, $id){

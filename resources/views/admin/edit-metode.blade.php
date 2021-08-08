@@ -2,19 +2,24 @@
 @section('isi_halaman')
 
 <div class="card card-body">
-    <h2>Untuk Toko A</h2>
+    <h2>Untuk Toko {{$toko->name}}</h2>
     <br>
-    <form action="">
+    <form action="{{route('insert-metode', request()->input('id'))}}" method="POST">
+        @csrf
         <div class="input-group mb-3">
-            <input type="text" name="metode_pembayaran" class="form-control form-control-solid" autocomplete="off" required />
+            <input type="text" name="metode" class="form-control form-control-solid" autocomplete="off" required />
+            <input type="hidden" name="toko_id" value="{{$toko->id}}">
             <div class="input-group-append">
-                <input type="submit" class="btn btn-success" value="Tambahkan"/>
+                <button type="submit" class="ms-3 btn btn-success">Tambahkan</button>
             </div>
         </div>
     </form>
     <br>
     <div class="col-6">
     <table class="table table-striped">
+        @php
+            $i = 1;
+        @endphp
         <thead>
             <tr>
                 <td>No</td>
@@ -23,11 +28,14 @@
             </tr>
         </thead>
         <tbody>
+            @foreach ($metodes as $item)
             <tr>
-                <td>1</td>
-                <td>QRIS</td>
-                <td><a class="badge badge-danger">Hapus</a></td>
+                <td>{{$i++}}</td>
+                <td>{{$item->metode}}</td>
+                <td><a href="{{route('delete-metode', $item->id)}}?toko_id={{request()->input('id')}}" class="badge badge-danger">Hapus</a></td>
             </tr>
+            @endforeach
+            
         </tbody>
     </table>
     </div>

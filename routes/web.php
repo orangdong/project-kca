@@ -32,6 +32,7 @@ Route::prefix('dashboard')
         Route::middleware(['isAdmin'])->group(function(){
             Route::get('edit-barang', [AdminController::class, 'editbarang'])->name('edit-barang');
             Route::get('edit-metode', [AdminController::class, 'editmetode'])->name('edit-metode');
+            Route::post('edit-metode/{id}', [AdminController::class, 'insert_metode'])->name('insert-metode');
             Route::get('edit-toko', [AdminController::class, 'edittoko'])->name('edit-toko');
             Route::get('edit-user', [AdminController::class, 'edituser'])->name('edit-user');
             Route::post('edit-user/{id}', [AdminController::class, 'edit_user'])->name('edit-user-form');
@@ -41,6 +42,7 @@ Route::prefix('dashboard')
             Route::post('edit-toko/{id}', [AdminController::class, 'edit'])->name('edit-toko-form');
             Route::post('insert-toko', [AdminController::class, 'insert'])->name('insert-toko-form');
             Route::post('insert-user', [AdminController::class, 'insert_user'])->name('insert-user-form');
+            Route::get('delete-metode/{id}', [AdminController::class, 'delete_metode'])->name('delete-metode');
         });
 
         Route::middleware(['isUser'])->group(function(){
