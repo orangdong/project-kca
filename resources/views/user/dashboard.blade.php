@@ -25,8 +25,8 @@
           @csrf
           <label class="required form-label">Metode Pembayaran</label>
           <div class="w-100 ">
-						<select name="metode" required class="form-select form-select-solid" data-control="select2" data-placeholder="-" data-hide-search="true" data-select2-id="select2-data-18-0jcq" tabindex="-1" aria-hidden="true">
-							<option value="" data-select2-id="select2-data-18-0jcq"></option>
+						<select name="metode" required class="form-select form-select-solid" data-control="select2" data-placeholder="-" data-hide-search="true" tabindex="-1" aria-hidden="true">
+							<option value=""></option>
 							<option value="Tunai">Tunai</option>
               <option value="GoPay">GoPay</option>
 							<option value="OVO">OVO</option>
@@ -72,7 +72,9 @@
         </div>
         <div class="mb-10">
           <input type="hidden" id="total" name="total" value="">
-            <input type="submit" class="btn btn-dark" value="Checkout"/>
+          <input type="hidden" id="total_normal" name="total_normal" value="">
+          @if(!empty($member)) <input type="hidden" name="phone_member" value="{{ $member->phone_member }}"> @endif
+          <input type="submit" class="btn btn-dark" value="Checkout"/>
             
             </form>
         </div>
@@ -97,13 +99,13 @@
                     </thead>
                     <tbody>
                     
-                      <?php $total = 0 ?>
+                      <?php $total = 0; $total_normal = 0; ?>
                       @forelse ($keranjang as $item)
                       <tr>
                           <td>{{$item->name}}</td>
-                          <td>{{number_format($item->harga, 0, ".", ".")}}/{{$item->satuan}}</td>
+                          <td>{{number_format($item->harga, 0, ".", ".")}}</td>
                           <td>
-                            {{$item->jumlah}}
+                            <b>{{$item->jumlah}}</b>
                             <!--
                             <a href="{{ route('edit-basket') }}?barcode={{$item->barcode}}&action=add" class='edit-button plus-item badge badge-info input-group-addon'>+</a>
                             <a href="{{ route('edit-basket') }}?barcode={{$item->barcode}}&action=minus" class='edit-button minus-item input-group-addon badge badge-warning'>-</a>
@@ -116,64 +118,69 @@
                               <div class="input-group">
                                 <input type="number" class="form-control" name="jumlah" value="{{$item->jumlah}}"/>
                                 <input type="hidden" name="keranjang_id" value="{{$item->id}}"/>
-                                <input type="submit" class="btn btn-sm btn-primary" style="width:5px;" value="U">
+                                <input type="submit" class="btn btn-sm btn-secondary" style="width:5px;" value="U">
                                 <a href="{{ route('edit-basket') }}?barcode={{$item->barcode}}&action=delete" class="btn btn-sm btn-danger" style="width:5px;">X</a>
                               </div>
                             </form>
                           </td>
                           <td style="word-break: break-all;">
-                            
+                            <!-- Cek Semua Kondisi Promo & Tidak Promo -->
                             @if($diskon->where('data_barang_id',$item->data_barang_id)->count() > 0)
                               @foreach($diskon->where('data_barang_id',$item->data_barang_id) as $d)
                                 {{ $d->diskon."%" }}
                               @endforeach
+                              <?php $total = $total+($item->harga*$item->jumlah*((100-$d->diskon)/100)) ?>
+
                             @elseif($special_price->where('data_barang_id',$item->data_barang_id)->count() > 0)
                               @foreach($special_price->where('data_barang_id',$item->data_barang_id) as $s)
                                 {{ number_format($s->special_price, 0, ".", ".") }}
                               @endforeach
-                            @elseif($item_get->where('item_get_id',$item->data_barang_id)->count() > 0) <!--barang di keranjang ini, ada nggak di tabel BuyGet? -->
-                              @foreach($item_get->where('item_get_id',$item->data_barang_id) as $i) <!-- dari tabel BuyGet -->
-                                <!-- begin::Buy Get -->
-                                  @php $tinjau_keranjang = $keranjang->where('data_barang_id',$i->item_get_id) @endphp <!-- table Keranjang -->
-                                  <!-- Nyari item gratisan di table Keranjang -->
-                                  @foreach($tinjau_keranjang as $tk)
-                                    <!-- $i->buy Jumlah barang yg hrs dibeli ATURAN PROMO-->
-                                    <!-- $i->data_barang_id Barang apa yg hrs dibeli ATURAN PROMO-->
+                              <?php $total = $total+($s->special_price*$item->jumlah) ?>
 
-                                    @php $barang_dibeli_keranjang = $keranjang->where('data_barang_id',$i->data_barang_id) @endphp
-                                    <!-- Apakah barang ATURAN PROMO ada di keranjang -->
-                                    @foreach($barang_dibeli_keranjang as $bdk)
-                                       <!-- $bdk->jumlah Jumlah brg ATURAN PROMO di keranjang -->
-                                      @if($bdk->jumlah%$i->buy == 0) <!-- Kalo belinya sesuai ATURAN PROMO -->
-                                        @php $sisa_bagi = $bdk->jumlah % $tk->jumlah;
-                                        $hasil_bagi = ($bdk->jumlah - $sisa_bagi) / $tk->jumlah; @endphp
-
-                                        @if($hasil_bagi > 0)
-                                          @if($sisa_bagi == 0 && $bdk->jumlah !== $tk->jumlah)
-                                            @php $pesan_promo = "free" @endphp
-                                          @else
-                                            @php $pesan_promo  = "free & no" @endphp
-                                          @endif
-                                        @else
-                                          @php $pesan_promo  = "free & no" @endphp
-                                        @endif
-
-                                      @elseif($bdk->jumlah > $i->buy)
-                                        @php $pesan_promo = "Free & No" @endphp
-                                      @endif
-
-                                    @endforeach
-
+                            @else
+                              @if($item_get->where('item_get_id',$item->data_barang_id)->count() > 0)
+                                @php $free = 0 @endphp
+                                @foreach($item_get->where('item_get_id',$item->data_barang_id) as $i)
+                                  @foreach($keranjang->where('data_barang_id',$i->data_barang_id) as $k)
+                                    @php $sisa_bagi = $k->jumlah % $i->buy;
+                                    $kelipatan_bawah = ($k->jumlah - $sisa_bagi) / $i->buy;
+                                    $free = $free + ($i->get*$kelipatan_bawah); @endphp
                                   @endforeach
-                                <!-- end::BuyGet -->
-                                @if(isset($pesan_promo))
-                                  {{ $pesan_promo }}
+                                @endforeach
+                                @if($free > $item->jumlah) @php $free = $item->jumlah @endphp @endif
+                                @php $no_free = $item->jumlah-$free @endphp
+                                <!-- Percantik View BuyGet -->
+                                @if($free > 0 && $no_free > 0)
+                                  {{ $free." Free & ".$no_free." No" }}
+                                  @if(!empty($member))
+                                    <?php $total = $total+($item->harga*$no_free)*(95/100) ?>
+                                  @else
+                                    <?php $total = $total+($item->harga*$no_free) ?>
+                                  @endif
+                                @elseif($free > 0 && $no_free <= 0)
+                                  {{ $free." Free" }}
+                                @else
+                                  @if(!empty($member))
+                                    <?php $total = $total + ($item->harga*$item->jumlah)*(95/100) ?>
+                                  @else
+                                    <?php $total = $total + ($item->harga*$item->jumlah) ?>
+                                  @endif
+                                  <?php $total_normal = $total_normal + ($item->harga*$item->jumlah); ?>
                                 @endif
-                              @endforeach
+                              @else
+                                @if(!empty($member))
+                                  <?php $total = $total + ($item->harga*$item->jumlah)*(95/100) ?>
+                                @else
+                                  <?php $total = $total + ($item->harga*$item->jumlah) ?>
+                                @endif
+                                <?php $total_normal = $total_normal + ($item->harga*$item->jumlah); ?>
+                              @endif
                             @endif
+
+                              
                           </td>
                       </tr>
-                      <?php $total = $total+($item->harga*$item->jumlah) ?>  
+                      
                       @empty
                         <tr>
                           <td colspan="6" class="text-center">Keranjang kosong</td>
@@ -195,9 +202,36 @@
     </div>
 </div>
 
+<!-- end::Modal Member-->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Program Member</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{{ route('dashboard') }}" method="get">
+          @csrf
+          <div class="mb-3">
+              <label class="form-label required">Phone</label>
+              <input type="number" class="form-control form-control-solid" name="phone_member" placeholder="Nomor telepon" required autocomplete="off"/>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <a type="button" class="btn btn-secondary" href="{{ route('dashboard') }}">Reset</a>
+        <button type="submit" class="btn btn-primary">Input</button>
+      </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end::Modal Member-->
+
 <script type="text/javascript">
 
 document.getElementById('total').value = <?= $total ?>;
+document.getElementById('total_normal').value = <?= $total_normal ?>;
 
 document.getElementById("uang_pas").addEventListener('click',function(){
   document.getElementById("uang_masuk").value = <?= $total ?>;
@@ -217,3 +251,10 @@ function tambah(uang){
 </script>
 
 @endsection('isi_halaman')
+
+@section('isi_action')
+@if(!empty($member))
+<a href="#" class="btn btn-sm btn-success">{{ $member->name }}</a>
+@endif
+<button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Member</button>
+@endsection('isi_action')
