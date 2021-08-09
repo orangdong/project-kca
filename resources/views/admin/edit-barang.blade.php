@@ -41,9 +41,6 @@
                         <input type="submit" class="btn btn-primary" value="Search by name"/>
                     </div>
                 </form>
-                <div class="mb-10">
-                    <a href="#" class="btn btn-info">Add New Item</a>
-                </div>
             </div>
             <div class="card card-body mt-3">
                 <h2 class="mb-3">Add by CSV</h2>
