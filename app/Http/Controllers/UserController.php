@@ -10,14 +10,16 @@ use App\Models\Orderan;
 use App\Models\Diskon;
 use App\Models\SpecialPrice;
 use App\Models\BuyGet;
+use App\Models\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function index(){
+    public function index(Request $request){
         $user = Auth::user();
-        
+        $phone_member = $request->input('phone_member');
+        $member = Member::where('phone', $phone_member)->first();
         $keranjang = Keranjang::where('toko_id', $user->toko_id)->get();
 
         $diskon = Diskon::get();
@@ -26,6 +28,7 @@ class UserController extends Controller
         
         return view('user.dashboard', [
             'user' => $user,
+            'member' => $member,
             'title' => 'Dashboard',
             'keranjang' => $keranjang,
             'diskon' => $diskon,
@@ -55,6 +58,7 @@ class UserController extends Controller
         $metode = $request->input('metode');
         $debit = $request->input('debit');
         $total = $request->input('total');
+        $total_normal = $request->input('total_normal'); // cek member
         $keranjang = Keranjang::where('toko_id', $user->toko_id)->get();
 
         if($total > $debit){
