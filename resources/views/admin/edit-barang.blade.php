@@ -1,28 +1,32 @@
 @extends('layouts.app')
 @section('isi_halaman')
-<h2>Untuk Toko A</h2>
+<h2>Untuk Toko {{$toko->name}}</h2>
     <br>
     <div class="row">
         <div class="col">
             <div class="card card-body">
-                <form action="" method="post">
+                <form action="{{route('edit-barang-barcode')}}" method="post">
+                    @csrf
                     <div class="mb-10">
                         <label class="required form-label">Barcode</label>
                         <input type="number" name="barcode" class="form-control form-control-solid" autocomplete="off" autofocus required />
                     </div>
+                    <input type="hidden" name="toko_id" value="{{request()->input('id')}}">
                     <div class="mb-10">
                         <input type="submit" class="btn btn-primary" value="Search by barcode"/>
                     </div>
                 </form>
-                <form action="" method="post">
+                <form action="{{route('edit-barang-barcode')}}" method="post">
+                    @csrf
                     <div class="mb-10">
                         <label class="required form-label">Nama Barang</label>
-                        <select name="country" required data-control="select2" data-placeholder="-" class="form-select form-select-solid form-select-lg fw-bold select2-hidden-accessible">
+                        <select name="barcode" required data-control="select2" data-placeholder="-" class="form-select form-select-solid form-select-lg fw-bold select2-hidden-accessible">
                             <option value=""></option>
-                            <option value="AF">Afghanistan</option>
-                            <option value="AX">Aland Islands</option>
-                            <option value="AL">Albania</option>
+                            @foreach ($barangs as $item)
+                                <option value="{{$item->barcode}}">{{$item->name}}</option>
+                            @endforeach
                         </select>
+                        <input type="hidden" name="toko_id" value="{{request()->input('id')}}">
                     </div>
                     <div class="mb-10">
                         <input type="submit" class="btn btn-primary" value="Search by name"/>
@@ -35,27 +39,53 @@
         </div>
         <div class="col">
             <div class="card card-body">
-                <form action="" method="post">
+                <form action="{{route('edit-barang-form')}}" method="post">
+                    @csrf
+                    @if ($barang)
                     <div class="mb-10">
                         <label class="required form-label">Nama Barang</label>
-                        <input type="text" name="nama" class="form-control form-control-solid" value="Tepung Terigu" autocomplete="off" required />
+                        <input type="text" name="name" class="form-control form-control-solid" value="{{$barang->name}}" autocomplete="off" required />
                     </div>
                     <div class="mb-10">
                         <label class="required form-label">Barcode</label>
-                        <input type="number" name="barcode" class="form-control form-control-solid" value="123456789" autocomplete="off" required />
+                        <input type="number" name="barcode" class="form-control form-control-solid" value="{{$barang->barcode}}" autocomplete="off" required />
                     </div>
                     <div class="mb-10">
                         <label class="required form-label">Harga</label>
-                        <input type="number" name="harga" class="form-control form-control-solid" value="11000" autocomplete="off" required />
+                        <input type="number" name="harga" class="form-control form-control-solid" value="{{$barang->harga_satuan}}" autocomplete="off" required />
                     </div>
                     <div class="mb-10">
                         <label class="required form-label">Satuan</label>
-                        <input type="text" name="satuan" class="form-control form-control-solid" value="pcs" autocomplete="off" required />
+                        <input type="text" name="satuan" class="form-control form-control-solid" value="{{$barang->satuan}}" autocomplete="off" required />
                     </div>
                     <div class="mb-10">
                         <label class="required form-label">Stok</label>
-                        <input type="number" name="stok" class="form-control form-control-solid" value="53" autocomplete="off" required />
+                        <input type="number" name="stok" class="form-control form-control-solid" value="{{$barang->stok}}" autocomplete="off" required />
                     </div>
+                    <input type="hidden" value="{{$barang->id}}" name="barang_id">
+                    @else
+                    <div class="mb-10">
+                        <label class="required form-label">Nama Barang</label>
+                        <input type="text" name="name" class="form-control form-control-solid" autocomplete="off" required disabled/>
+                    </div>
+                    <div class="mb-10">
+                        <label class="required form-label">Barcode</label>
+                        <input type="number" name="barcode" class="form-control form-control-solid" autocomplete="off" required disabled/>
+                    </div>
+                    <div class="mb-10">
+                        <label class="required form-label">Harga</label>
+                        <input type="number" name="harga" class="form-control form-control-solid" autocomplete="off" required disabled/>
+                    </div>
+                    <div class="mb-10">
+                        <label class="required form-label">Satuan</label>
+                        <input type="text" name="satuan" class="form-control form-control-solid" autocomplete="off" required disabled/>
+                    </div>
+                    <div class="mb-10">
+                        <label class="required form-label">Stok</label>
+                        <input type="number" name="stok" class="form-control form-control-solid" autocomplete="off" required disabled/>
+                    </div>    
+                    @endif
+                    
                     <div class="mb-10">
                         <input type="submit" class="btn btn-success" value="Edit Barang"/>
                     </div>

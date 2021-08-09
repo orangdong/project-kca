@@ -7,8 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Actions\Fortify\PasswordValidationRules;
+use App\Models\DataBarang;
 use App\Models\MetodePembayaran;
 use App\Models\User;
+use PhpParser\Node\Expr\FuncCall;
 
 class AdminController extends Controller
 {
@@ -25,11 +27,47 @@ class AdminController extends Controller
         ]);
     }
 
-    public function editbarang(){
+    public function edit_barang_barcode(Request $request){
+        $barcode = $request->input('barcode');
+        $toko_id = $request->input('toko_id');
+        $barang = DataBarang::where([['barcode', $barcode], ['toko_id', $toko_id]])->first();
+        
+        if(!$barang){
+            return back()->with('danger', 'barang tidak ditemukan');
+        }
+
+        return redirect(route('edit-barang').'?id='.$toko_id.'&barang_id='.$barang->id);
+    }
+
+    public function edit_barang(Request $request){
+        $data = $request->all();
+        $barang = DataBarang::where('id', $request->input('barang_id'))->first();
+        if(!$barang){
+            return back()->with('danger', 'pilih barang terlebih dahulu');
+        }
+        $barang->update($data);
+
+        return back()->with('success', 'update barang success');
+    }
+
+    public function editbarang(Request $request){
         $user = Auth::user();
+        $id = $request->input('id');
+        $toko = Toko::where('id', $id)->first();
+
+        if(!$id || !$toko){
+            return redirect(route('navigasi'))->with('danger', 'invalid toko');
+        }
+
+        $barang_id = $request->input('barang_id');
+        $barang = DataBarang::where([['id', $barang_id], ['toko_id', $id]])->first();
+        $barangs = DataBarang::where('toko_id', $id)->get();
 
         return view('admin.edit-barang', [
             'user' => $user,
+            'toko' => $toko,
+            'barang' => $barang,
+            'barangs' => $barangs,
             'title' => 'Edit Barang'
         ]);
     }

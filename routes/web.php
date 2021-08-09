@@ -31,6 +31,8 @@ Route::prefix('dashboard')
         
         Route::middleware(['isAdmin'])->group(function(){
             Route::get('edit-barang', [AdminController::class, 'editbarang'])->name('edit-barang');
+            Route::post('edit-barang', [AdminController::class, 'edit_barang'])->name('edit-barang-form');
+            Route::post('edit-barang-barcode', [AdminController::class, 'edit_barang_barcode'])->name('edit-barang-barcode');
             Route::get('edit-metode', [AdminController::class, 'editmetode'])->name('edit-metode');
             Route::post('edit-metode/{id}', [AdminController::class, 'insert_metode'])->name('insert-metode');
             Route::get('edit-toko', [AdminController::class, 'edittoko'])->name('edit-toko');
