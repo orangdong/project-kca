@@ -17,9 +17,27 @@ class BarangOrder extends Model
     protected $fillable = [
         'orderan_id',
         'data_barang_id',
+        'parcel',
         'name',
         'harga_satuan',
         'jumlah',
         'harga_subtotal'
     ];
+
+    public function orderan(){
+        return $this->belongsTo(Orderan::class);
+    }
+
+    public function history_diskons(){
+        return $this->hasMany(HistoryDiskon::class);
+    }
+
+    public function history_special_prices(){
+        return $this->hasMany(HistorySpecialPrice::class);
+    }
+
+    public function history_buy_gets(){
+        return $this->hasMany(HistoryBuyGet::class);
+    }
+
 }

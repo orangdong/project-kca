@@ -73,7 +73,7 @@
         <div class="mb-10">
           <input type="hidden" id="total" name="total" value="">
           <input type="hidden" id="total_normal" name="total_normal" value="">
-          @if(!empty($member)) <input type="hidden" name="phone_member" value="{{ $member->phone_member }}"> @endif
+          @if(!empty($member)) <input type="hidden" name="phone_member" value="{{ $member->phone }}"> @endif
           <input type="submit" class="btn btn-dark" value="Checkout"/>
             
             </form>
@@ -101,86 +101,137 @@
                     
                       <?php $total = 0; $total_normal = 0; ?>
                       @forelse ($keranjang as $item)
-                      <tr>
-                          <td>{{$item->name}}</td>
-                          <td>{{number_format($item->harga, 0, ".", ".")}}</td>
-                          <td>
-                            <b>{{$item->jumlah}}</b>
-                            <!--
-                            <a href="{{ route('edit-basket') }}?barcode={{$item->barcode}}&action=add" class='edit-button plus-item badge badge-info input-group-addon'>+</a>
-                            <a href="{{ route('edit-basket') }}?barcode={{$item->barcode}}&action=minus" class='edit-button minus-item input-group-addon badge badge-warning'>-</a>
-                            <a href="{{ route('edit-basket') }}?barcode={{$item->barcode}}&action=delete" class='edit-button delete-item badge badge-danger'>X</a>
-                            -->
-                          </td>
-                          <td>
-                            <form action="{{ route('edit-jumlah') }}" method="post">
-                              @csrf
-                              <div class="input-group">
-                                <input type="number" class="form-control" name="jumlah" value="{{$item->jumlah}}"/>
-                                <input type="hidden" name="keranjang_id" value="{{$item->id}}"/>
-                                <input type="submit" class="btn btn-sm btn-secondary" style="width:5px;" value="U">
-                                <a href="{{ route('edit-basket') }}?barcode={{$item->barcode}}&action=delete" class="btn btn-sm btn-danger" style="width:5px;">X</a>
-                              </div>
-                            </form>
-                          </td>
-                          <td style="word-break: break-all;">
-                            <!-- Cek Semua Kondisi Promo & Tidak Promo -->
-                            @if($diskon->where('data_barang_id',$item->data_barang_id)->count() > 0)
-                              @foreach($diskon->where('data_barang_id',$item->data_barang_id) as $d)
-                                {{ $d->diskon."%" }}
-                              @endforeach
-                              <?php $total = $total+($item->harga*$item->jumlah*((100-$d->diskon)/100)) ?>
-
-                            @elseif($special_price->where('data_barang_id',$item->data_barang_id)->count() > 0)
-                              @foreach($special_price->where('data_barang_id',$item->data_barang_id) as $s)
-                                {{ number_format($s->special_price, 0, ".", ".") }}
-                              @endforeach
-                              <?php $total = $total+($s->special_price*$item->jumlah) ?>
-
-                            @else
-                              @if($item_get->where('item_get_id',$item->data_barang_id)->count() > 0)
-                                @php $free = 0 @endphp
-                                @foreach($item_get->where('item_get_id',$item->data_barang_id) as $i)
-                                  @foreach($keranjang->where('data_barang_id',$i->data_barang_id) as $k)
-                                    @php $sisa_bagi = $k->jumlah % $i->buy;
-                                    $kelipatan_bawah = ($k->jumlah - $sisa_bagi) / $i->buy;
-                                    $free = $free + ($i->get*$kelipatan_bawah); @endphp
+                        @if($item->parcel == 1)
+                          <tr>
+                            <td>{{ $item->name }}</td>
+                            <td>{{ number_format($item->harga, 0, ".", ".") }}</td>
+                            <td><b>{{ $item->jumlah }}</b></td>
+                            <td>
+                              <form action="{{ route('edit-jumlah') }}" method="post">
+                                @csrf
+                                <div class="input-group">
+                                  <input type="number" class="form-control" name="jumlah" value="{{$item->jumlah}}"/>
+                                  <input type="hidden" name="keranjang_id" value="{{$item->id}}"/>
+                                  <input type="submit" class="btn btn-sm btn-secondary" style="width:5px;" value="U">
+                                  <a href="{{ route('edit-basket') }}?barcode={{$item->barcode}}&action=delete" class="btn btn-sm btn-danger" style="width:5px;">X</a>
+                                </div>
+                              </form>
+                            </td>
+                            <td>
+                              @php $total_normal = $total_normal + ($item->harga*$item->jumlah);
+                              $total = $total + ($item->harga*$item->jumlah) @endphp
+                            </td>
+                          </tr>
+                        @else
+                          <tr>
+                              <td>{{$item->name}}</td>
+                              <td>{{number_format($item->harga, 0, ".", ".")}}</td>
+                              <td>
+                                <b>{{$item->jumlah}}</b>
+                                <!--
+                                <a href="{{ route('edit-basket') }}?barcode={{$item->barcode}}&action=add" class='edit-button plus-item badge badge-info input-group-addon'>+</a>
+                                <a href="{{ route('edit-basket') }}?barcode={{$item->barcode}}&action=minus" class='edit-button minus-item input-group-addon badge badge-warning'>-</a>
+                                <a href="{{ route('edit-basket') }}?barcode={{$item->barcode}}&action=delete" class='edit-button delete-item badge badge-danger'>X</a>
+                                -->
+                              </td>
+                              <td>
+                                <form action="{{ route('edit-jumlah') }}" method="post">
+                                  @csrf
+                                  <div class="input-group">
+                                    <input type="number" class="form-control" name="jumlah" value="{{$item->jumlah}}"/>
+                                    @if(!empty($member))
+                                      <input type="hidden" name="keranjang_id" value="{{$item->id}}"/>
+                                      <input type="hidden" name="phone_member" value="{{$member->phone}}"/>
+                                      <input type="submit" class="btn btn-sm btn-secondary" style="width:5px;" value="U">
+                                      <a href="{{ route('edit-basket') }}?barcode={{$item->barcode}}&action=delete&member={{$member->phone}}" class="btn btn-sm btn-danger" style="width:5px;">X</a>
+                                    @else
+                                      <input type="hidden" name="keranjang_id" value="{{$item->id}}"/>
+                                      <input type="submit" class="btn btn-sm btn-secondary" style="width:5px;" value="U">
+                                      <a href="{{ route('edit-basket') }}?barcode={{$item->barcode}}&action=delete" class="btn btn-sm btn-danger" style="width:5px;">X</a>
+                                    @endif
+                                  </div>
+                                </form>
+                              </td>
+                              <td style="word-break: break-all;">
+                                <!-- Cek Semua Kondisi Promo & Tidak Promo -->
+                                @if($diskon->where('data_barang_id',$item->data_barang_id)->count() > 0)
+                                  @foreach($diskon->where('data_barang_id',$item->data_barang_id) as $d)
+                                    {{ $d->diskon."%" }}
                                   @endforeach
-                                @endforeach
-                                @if($free > $item->jumlah) @php $free = $item->jumlah @endphp @endif
-                                @php $no_free = $item->jumlah-$free @endphp
-                                <!-- Percantik View BuyGet -->
-                                @if($free > 0 && $no_free > 0)
-                                  {{ $free." Free & ".$no_free." No" }}
-                                  @if(!empty($member))
-                                    <?php $total = $total+($item->harga*$no_free)*(95/100) ?>
+                                  <?php $total = $total+($item->harga*$item->jumlah*((100-$d->diskon)/100));
+                                  $total_normal = $total_normal + ($item->harga*$item->jumlah); ?>
+
+                                @elseif($special_price->where('data_barang_id',$item->data_barang_id)->count() > 0)
+                                  @foreach($special_price->where('data_barang_id',$item->data_barang_id) as $s)
+                                    {{ number_format($s->special_price, 0, ".", ".") }}
+                                  @endforeach
+                                  <?php $total = $total+($s->special_price*$item->jumlah);
+                                  $total_normal = $total_normal + ($item->harga*$item->jumlah); ?>
+
+                                @elseif($item_get->where('item_get_id',$item->data_barang_id)->count() > 0)
+                                  @php $free = 0 @endphp
+                                  @foreach($item_get->where('item_get_id',$item->data_barang_id) as $i)
+                                    @foreach($keranjang->where('data_barang_id',$i->data_barang_id) as $k)
+                                      @if($diskon->where('data_barang_id',$k->data_barang_id)->count() < 1 && $special_price->where('data_barang_id',$k->data_barang_id)->count() < 1)
+                                        @php $sisa_bagi = $k->jumlah % $i->buy;
+                                        $kelipatan_bawah = ($k->jumlah - $sisa_bagi) / $i->buy;
+                                        $free = $free + ($i->get*$kelipatan_bawah); @endphp
+                                      @endif
+                                    @endforeach
+                                  @endforeach
+                                  @if($free > $item->jumlah) @php $free = $item->jumlah @endphp @endif
+                                  @php $no_free = $item->jumlah-$free @endphp
+                                  <!-- Percantik View BuyGet -->
+                                  @if($free > 0 && $no_free > 0)
+                                    {{ $free." Free & ".$no_free." No" }}
+                                    @if(!empty($member))
+                                      <?php $total = $total+($item->harga*$no_free)*(95/100) ?>
+                                    @else
+                                      <?php $total = $total+($item->harga*$no_free) ?>
+                                    @endif
+                                    @php $total_normal = $total_normal + ($item->harga*$no_free) @endphp
+                                  @elseif($free > 0 && $no_free <= 0)
+                                    {{ $free." Free" }}
                                   @else
-                                    <?php $total = $total+($item->harga*$no_free) ?>
+                                    @php $harga_normal = 0 @endphp
+                                    <!-- Cek Barang ini punya GRatisan gak -->
+                                    @foreach($item_get->where('data_barang_id', $item->data_barang_id) as $i)
+                                      @php $kelipatan_bawah_buy = ($item->jumlah - ($item->jumlah % $i->buy)) / $i->buy;
+                                      $harga_normal = $harga_normal + ($i->buy*$kelipatan_bawah_buy) @endphp
+                                    @endforeach
+                                    @if($item->jumlah > $harga_normal)
+                                      @if(!empty($member))
+                                        <?php $total = $total + ($item->harga*$harga_normal) + ($item->harga*($item->jumlah-$harga_normal)*(95/100)) ?>
+                                      @else
+                                        <?php $total = $total + ($item->harga*$harga_normal) + ($item->harga*($item->jumlah-$harga_normal)) ?>
+                                      @endif
+                                    @else
+                                      <?php $total = $total + ($item->harga*$item->jumlah) ?>
+                                    @endif
+                                    <?php $total_normal = $total_normal + ($item->harga*($item->jumlah-$harga_normal)); ?>
                                   @endif
-                                @elseif($free > 0 && $no_free <= 0)
-                                  {{ $free." Free" }}
                                 @else
-                                  @if(!empty($member))
-                                    <?php $total = $total + ($item->harga*$item->jumlah)*(95/100) ?>
+                                  @php $harga_normal = 0 @endphp
+                                  <!-- Cek Barang ini punya GRatisan gak -->
+                                  @foreach($item_get->where('data_barang_id', $item->data_barang_id) as $i)
+                                    @php $kelipatan_bawah_buy = ($item->jumlah - ($item->jumlah % $i->buy)) / $i->buy;
+                                    $harga_normal = $harga_normal + ($i->buy*$kelipatan_bawah_buy) @endphp
+                                  @endforeach
+                                  @if($item->jumlah > $harga_normal)
+                                    @if(!empty($member))
+                                      <?php $total = $total + ($item->harga*$harga_normal) + ($item->harga*($item->jumlah-$harga_normal)*(95/100)) ?>
+                                    @else
+                                      <?php $total = $total + ($item->harga*$harga_normal) + ($item->harga*($item->jumlah-$harga_normal)) ?>
+                                    @endif
                                   @else
                                     <?php $total = $total + ($item->harga*$item->jumlah) ?>
                                   @endif
-                                  <?php $total_normal = $total_normal + ($item->harga*$item->jumlah); ?>
+                                  <?php $total_normal = $total_normal + ($item->harga*($item->jumlah-$harga_normal)); ?>
                                 @endif
-                              @else
-                                @if(!empty($member))
-                                  <?php $total = $total + ($item->harga*$item->jumlah)*(95/100) ?>
-                                @else
-                                  <?php $total = $total + ($item->harga*$item->jumlah) ?>
-                                @endif
-                                <?php $total_normal = $total_normal + ($item->harga*$item->jumlah); ?>
-                              @endif
-                            @endif
 
-                              
-                          </td>
-                      </tr>
-                      
+                              </td>
+                          </tr>
+                        @endif
                       @empty
                         <tr>
                           <td colspan="6" class="text-center">Keranjang kosong</td>

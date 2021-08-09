@@ -15,7 +15,7 @@ class CreateHistoryDiskonsTable extends Migration
     {
         Schema::create('history_diskons', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('barang_order_id')->constrained('data_barangs')->onDelete('cascade');
+            $table->foreignId('barang_order_id')->constrained('barang_orders')->onDelete('cascade');
             $table->integer('diskon');
             $table->bigInteger('harga_diskon');
             $table->timestamps();

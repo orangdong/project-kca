@@ -17,6 +17,7 @@ class CreateParcelItemsTable extends Migration
             $table->id();
             $table->foreignId('parcel_id')->constrained('parcels')->onDelete('cascade');
             $table->foreignId('data_barang_id')->constrained('data_barangs')->onDelete('cascade');
+            $table->integer('jumlah');
             $table->timestamps();
         });
     }

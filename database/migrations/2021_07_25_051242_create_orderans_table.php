@@ -16,6 +16,7 @@ class CreateOrderansTable extends Migration
         Schema::create('orderans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->integer('member_id');
             $table->string('metode');
             $table->bigInteger('harga_total');
             $table->bigInteger('uang_masuk');

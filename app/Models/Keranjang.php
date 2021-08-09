@@ -15,15 +15,20 @@ class Keranjang extends Model
     ];
 
     protected $fillable = [
-        'toko_id',
+        'user_id',
         'barcode',
         'data_barang_id',
+        'parcel',
         'name',
         'satuan',
         'harga',
         'jumlah'
     ];
 
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+    
     public function diskon(){
         return $this->belongsTo(Diskon::class);
     }

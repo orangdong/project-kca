@@ -18,6 +18,7 @@ class Orderan extends Model
 
     protected $fillable = [
         'user_id',
+        'member_id',
         'metode',
         'harga_total',
         'uang_masuk',
@@ -26,6 +27,10 @@ class Orderan extends Model
 
     public function user(){
         return $this->belongsTo(User::class);
+    }
+
+    public function member(){
+        return $this->belongsTo(Member::class);
     }
 
     public function barang_orders(){

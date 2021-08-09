@@ -15,9 +15,10 @@ class CreateKeranjangsTable extends Migration
     {
         Schema::create('keranjangs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('toko_id')->constrained('tokos')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->bigInteger('barcode');
             $table->integer('data_barang_id');
+            $table->integer('parcel');
             $table->string('name');
             $table->string('satuan');
             $table->bigInteger('harga');

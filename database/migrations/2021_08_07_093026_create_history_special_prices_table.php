@@ -15,7 +15,7 @@ class CreateHistorySpecialPricesTable extends Migration
     {
         Schema::create('history_special_prices', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('barang_order_id')->constrained('data_barangs')->onDelete('cascade');
+            $table->foreignId('barang_order_id')->constrained('barang_orders')->onDelete('cascade');
             $table->bigInteger('special_price');
             $table->timestamps();
         });

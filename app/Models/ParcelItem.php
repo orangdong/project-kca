@@ -4,12 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ParcelItem extends Model
 {
     use HasFactory;
-    use SoftDeletes;
 
     protected $casts = [
         'created_at' => 'datetime:Y-m-d H:i:s',
@@ -17,8 +15,12 @@ class ParcelItem extends Model
     ];
 
     protected $fillable = [
-        'name',
-        'lokasi',
-        'phone'
+        'parcel_id',
+        'data_barang_id',
+        'jumlah'
     ];
+
+    public function parcel(){
+        return $this->belongsTo(Parcel::class);
+    }
 }

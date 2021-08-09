@@ -4,12 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Parcel extends Model
 {
     use HasFactory;
-    use SoftDeletes;
 
     protected $casts = [
         'created_at' => 'datetime:Y-m-d H:i:s',
@@ -23,4 +21,8 @@ class Parcel extends Model
         'harga_satuan',
         'stok'
     ];
+
+    public function parcel_items(){
+        return $this->hasMany(ParcelItem::class);
+    }
 }

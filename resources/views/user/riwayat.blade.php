@@ -1,10 +1,10 @@
 @extends('layouts.app')
 @section('isi_halaman')
-
+<?php $today = date("Y-m-d") ?>
 <div class="card card-body">
 <h2>Untuk Toko A</h2>
     <br>
-    <form action="">
+    <form action="{{ route('riwayat') }}">
         <label class="form-label">Tanggal Observasi</label>
         <div class="input-group mb-3">
             <input class="form-control form-control-solid" placeholder="Pick date rage" type="date" id="kt_daterangepicker_3"/>

@@ -17,6 +17,7 @@ class CreateBarangOrdersTable extends Migration
             $table->id();
             $table->foreignId('orderan_id')->constrained('orderans')->onDelete('cascade');
             $table->integer('data_barang_id');
+            $table->integer('parcel');
             $table->string('name');
             $table->bigInteger('harga_satuan');
             $table->bigInteger('jumlah');
