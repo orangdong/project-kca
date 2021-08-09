@@ -32,6 +32,7 @@ Route::prefix('dashboard')
         Route::middleware(['isAdmin'])->group(function(){
             Route::get('edit-barang', [AdminController::class, 'editbarang'])->name('edit-barang');
             Route::post('edit-barang', [AdminController::class, 'edit_barang'])->name('edit-barang-form');
+            Route::post('upload-csv', [AdminController::class, 'upload_csv'])->name('upload-csv');
             Route::post('edit-barang-barcode', [AdminController::class, 'edit_barang_barcode'])->name('edit-barang-barcode');
             Route::get('edit-metode', [AdminController::class, 'editmetode'])->name('edit-metode');
             Route::post('edit-metode/{id}', [AdminController::class, 'insert_metode'])->name('insert-metode');
@@ -41,6 +42,7 @@ Route::prefix('dashboard')
             Route::post('edit-user-password/{id}', [AdminController::class, 'edit_user_password'])->name('edit-user-password');
             Route::get('navigasi', [AdminController::class, 'index'])->name('navigasi');
             Route::get('revenue', [AdminController::class, 'revenue'])->name('revenue');
+            Route::get('read-csv/{id}', [AdminController::class, 'read_csv'])->name('read-csv');
             Route::post('edit-toko/{id}', [AdminController::class, 'edit'])->name('edit-toko-form');
             Route::post('insert-toko', [AdminController::class, 'insert'])->name('insert-toko-form');
             Route::post('insert-user', [AdminController::class, 'insert_user'])->name('insert-user-form');

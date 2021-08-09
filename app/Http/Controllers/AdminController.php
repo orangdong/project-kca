@@ -8,8 +8,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Actions\Fortify\PasswordValidationRules;
 use App\Models\DataBarang;
+use App\Models\HistoryExport;
 use App\Models\MetodePembayaran;
 use App\Models\User;
+use Carbon\Carbon;
 use PhpParser\Node\Expr\FuncCall;
 
 class AdminController extends Controller
@@ -25,6 +27,60 @@ class AdminController extends Controller
             'tokos' => $tokos,
             'title' => 'Navigasi'
         ]);
+    }
+
+    public function upload_csv(Request $request){
+        $validatedData = $request->validate([
+            'csv' => 'required|mimes:csv,txt|max:4096',
+        ]);
+        $name = $request->file('csv')->getClientOriginalName();
+        $url =  $request->file('csv')->store('files', 'public');
+        $toko_id = $request->input('toko_id');
+        $data = [
+            'toko_id' => $toko_id,
+            'name' => $name,
+            'url' => $url
+        ];
+
+        HistoryExport::create($data);
+        return back()->with('success', 'upload csv success');
+    }
+
+    public function read_csv(Request $request, $id){
+
+        $csvFile = storage_path('app\public/'. $request->url);
+        // return $csvFile;
+        $file_handle = fopen($csvFile, 'r');
+        while (!feof($file_handle)) {
+        $line_of_text[] = fgetcsv($file_handle, 0, ",");
+        }
+        fclose($file_handle);
+        $barang = [];
+        foreach($line_of_text as $line){
+            if($line != false){
+                $array = $line;
+                $explode = explode(';', $array[0]);
+                $push = [
+                    'toko_id' => $id,
+                    'barcode' => $explode[2],
+                    'name' => $explode[3],
+                    'satuan' => $explode[4],
+                    'harga_satuan' => $explode[5],
+                    'stok' => $explode[6]
+                ];
+                array_push($barang, $push);
+            }
+        }
+        foreach($barang as $b){
+            DataBarang::create($b);
+        }
+
+        $imported_at = [
+            'imported_at' => Carbon::now('Asia/Jakarta')
+        ];
+        HistoryExport::where('id', $request->history_id)->update($imported_at);
+        return back()->with('success', 'import barang success');
+        // return $line_of_text;
     }
 
     public function edit_barang_barcode(Request $request){
@@ -62,11 +118,13 @@ class AdminController extends Controller
         $barang_id = $request->input('barang_id');
         $barang = DataBarang::where([['id', $barang_id], ['toko_id', $id]])->first();
         $barangs = DataBarang::where('toko_id', $id)->get();
+        $history_exports = HistoryExport::where('toko_id', $id)->get();
 
         return view('admin.edit-barang', [
             'user' => $user,
             'toko' => $toko,
             'barang' => $barang,
+            'history_exports' => $history_exports,
             'barangs' => $barangs,
             'title' => 'Edit Barang'
         ]);
