@@ -158,15 +158,13 @@
                                   @foreach($diskon->where('data_barang_id',$item->data_barang_id) as $d)
                                     {{ $d->diskon."%" }}
                                   @endforeach
-                                  <?php $total = $total+($item->harga*$item->jumlah*((100-$d->diskon)/100));
-                                  $total_normal = $total_normal + ($item->harga*$item->jumlah); ?>
+                                  <?php $total = $total+($item->harga*$item->jumlah*((100-$d->diskon)/100)); ?>
 
                                 @elseif($special_price->where('data_barang_id',$item->data_barang_id)->count() > 0)
                                   @foreach($special_price->where('data_barang_id',$item->data_barang_id) as $s)
                                     {{ number_format($s->special_price, 0, ".", ".") }}
                                   @endforeach
-                                  <?php $total = $total+($s->special_price*$item->jumlah);
-                                  $total_normal = $total_normal + ($item->harga*$item->jumlah); ?>
+                                  <?php $total = $total+($s->special_price*$item->jumlah);?>
 
                                 @elseif($item_get->where('item_get_id',$item->data_barang_id)->count() > 0)
                                   @php $free = 0 @endphp

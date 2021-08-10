@@ -30,6 +30,7 @@ Route::prefix('dashboard')
     {   
         
         Route::middleware(['isAdmin'])->group(function(){
+            Route::get('view-barang', [AdminController::class, 'viewbarang'])->name('view-barang');
             Route::get('edit-barang', [AdminController::class, 'editbarang'])->name('edit-barang');
             Route::post('edit-barang', [AdminController::class, 'edit_barang'])->name('edit-barang-form');
             Route::post('upload-csv', [AdminController::class, 'upload_csv'])->name('upload-csv');
@@ -58,6 +59,8 @@ Route::prefix('dashboard')
             Route::get('struk', [UserController::class, 'struk'])->name('struk');
             Route::get('riwayat', [UserController::class, 'riwayat'])->name('riwayat');
             Route::get('migrasi', [UserController::class, 'migrasi'])->name('migrasi');
+            Route::get('create-member', [UserController::class, 'create_member'])->name('create-member');
+            Route::post('insert-member', [UserController::class, 'insert_member'])->name('insert-member');
         });
         
         Route::get('user-profile', [UserController::class, 'edit'])->name('dashboard.profile');

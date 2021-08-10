@@ -8,7 +8,7 @@
     <div class="card card-body" style="font-size:12px;width:150px;">
         <center>
             <img style="width:auto;" src="{{ asset('media/logos/main-logo.svg') }}"><br><br>
-            <span onclick="window.print()">Ruko L'Grande<br>Jakarta Selatan</span><br>
+            <span>{{ $toko->lokasi }}<br>DKI Jakarta</span><br>
             ------------------------------------
         </center>
 
@@ -23,12 +23,72 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($orderan->barang_orders as $o)
-                <tr>
-                    <td style="word-break: break-all;">{{ $o->name }}<br>@ {{ number_format($o->harga_satuan , 0, ".", ".") }} </td>
-                    <td>{{ $o->jumlah }}</td>
-                    <td>{{ number_format($o->harga_subtotal , 0, ".", ".") }}</td>
-                </tr>
+                @php $total = 0 @endphp
+                @foreach($orderan->barang_orders as $ob)
+                    <!-- Cek Semua Kondisi Promo & Tidak Promo -->
+                    @if($diskon->where('barang_order_id',$ob->id)->count() > 0)
+                        @foreach($diskon->where('barang_order_id',$ob->id) as $d)
+                        <tr>
+                            <td style="word-break: break-all;">{{ $ob->name }}<br>@ {{ number_format($ob->harga_satuan , 0, ".", ".") }} </td>
+                            <td>{{ $ob->jumlah }}</td>
+                            <td>{{ number_format($ob->harga_subtotal , 0, ".", ".") }}</td>
+                        </tr>
+                        <tr>
+                            <td style="word-break: break-all;" colspan="2">Diskon {{ $d->diskon."%" }}</td>
+                            <td>{{ "-".number_format($d->diskon/100*$ob->harga_subtotal , 0, ".", ".") }}</td>
+                        </tr>
+                        @php $total = $total + (100-$d->diskon)/100*$ob->harga_subtotal @endphp
+                        @endforeach
+
+                    @elseif($special_price->where('barang_order_id',$ob->id)->count() > 0)
+                        @foreach($special_price->where('barang_order_id',$ob->id) as $s)
+                        <tr>
+                            <td style="word-break: break-all;">{{ $ob->name }}<br>@ {{ number_format($s->special_price, 0, ".", ".") }} </td>
+                            <td>{{ $ob->jumlah }}</td>
+                            <td>{{ number_format($s->special_price*$ob->jumlah , 0, ".", ".") }}</td>
+                        </tr>
+                        @php $total = $total + $s->special_price*$ob->jumlah @endphp
+                        @endforeach
+
+                    @elseif($item_get->where('barang_order_id',$ob->id)->count() > 0)
+                        @php $free = 0 @endphp
+                        @foreach($item_get->where('barang_order_id',$ob->id) as $i)
+                            @foreach($orderan->barang_orders->where('data_barang_id',$i->item_buy_id)->where('orderan_id',$orderan->id) as $k)
+                                @php $sisa_bagi = $k->jumlah % $i->buy;
+                                $kelipatan_bawah = ($k->jumlah - $sisa_bagi) / $i->buy;
+                                $free = $free + ($i->get*$kelipatan_bawah); @endphp
+                            @endforeach
+                        @endforeach
+                        @if($free > $ob->jumlah) @php $free = $ob->jumlah @endphp @endif
+                        @php $no_free = $ob->jumlah-$free @endphp
+                        <!-- Percantik View BuyGet -->
+                        @if($free > 0 && $no_free > 0)
+                            <tr>
+                                <td style="word-break: break-all;">{{ $ob->name }}<br>@ 0</td>
+                                <td>{{ $free }}</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td style="word-break: break-all;">{{ $ob->name }}<br>@ {{ number_format($ob->harga_satuan , 0, ".", ".") }} </td>
+                                <td>{{ $no_free }}</td>
+                                <td>{{ number_format($ob->harga_satuan*$no_free , 0, ".", ".") }}</td>
+                            </tr>
+                            @php $total = $total + $ob->harga_satuan*$no_free @endphp
+                        @elseif($free > 0 && $no_free <= 0)
+                            <tr>
+                                <td style="word-break: break-all;">{{ $ob->name }}<br>@ 0</td>
+                                <td>{{ $free }}</td>
+                                <td>0</td>
+                            </tr>
+                        @endif
+                    @else
+                        <tr>
+                            <td style="word-break: break-all;">{{ $ob->name }}<br>@ {{ number_format($ob->harga_satuan , 0, ".", ".") }} </td>
+                            <td>{{ $ob->jumlah }}</td>
+                            <td>{{ number_format($ob->harga_subtotal , 0, ".", ".") }}</td>
+                        </tr>
+                        @php $total = $total + $ob->harga_subtotal @endphp
+                    @endif
                 @endforeach
             </tbody>
         </table>
@@ -36,6 +96,11 @@
         
         
             <span><b>Total: Rp {{ number_format($orderan->harga_total , 0, ".", ".") }}</b></span>
+            @if($orderan->member_id !== 0)
+                <br>
+                Hemat Member: Rp {{ number_format($total-$orderan->harga_total , 0, ".", ".") }}
+            @endif
+
 
 	   <br><br>
         Metode: {{ $orderan->metode }}<br>
@@ -45,7 +110,7 @@
         <center>
                 -- Terima Kasih --
                 <br>
-                Telp/WA {{ $toko->phone }}
+                Telp {{ $toko->phone }}
                 <br>
                 {{ explode(" ",$orderan->created_at)[0] }}
                 <br>

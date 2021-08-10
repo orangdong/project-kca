@@ -16,6 +16,7 @@ class CreateHistoryBuyGetsTable extends Migration
         Schema::create('history_buy_gets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('barang_order_id')->constrained('barang_orders')->onDelete('cascade');
+            $table->integer('item_buy_id');
             $table->integer('buy');
             $table->integer('get');
             $table->integer('item_get_id');

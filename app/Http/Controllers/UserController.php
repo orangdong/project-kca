@@ -17,6 +17,7 @@ use App\Models\HistorySpecialPrice;
 use App\Models\HistoryBuyGet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -25,10 +26,10 @@ class UserController extends Controller
         $phone_member = $request->input('phone_member');
         $member = Member::where('phone', $phone_member)->first();
         $keranjang = Keranjang::where('user_id', $user->id)->get();
-
-        $diskon = Diskon::get();
-        $special_price = SpecialPrice::get();
-        $item_get = BuyGet::get();
+        $today = Carbon::today()->toDateString();
+        $diskon = Diskon::where('valid_until', '>=', $today)->get();
+        $special_price = SpecialPrice::where('valid_until', '>=', $today)->get();
+        $item_get = BuyGet::where('valid_until', '>=', $today)->get();
 
         if(!$member){
             return view('user.dashboard', [
@@ -57,15 +58,23 @@ class UserController extends Controller
     public function struk(Request $request){
         $user = Auth::user();
         $orderan_id = $request->input('orderan_id');
+        $ada_orderan = Orderan::whereid($orderan_id)->count();
         $orderan = Orderan::whereid($orderan_id)->with('barang_orders')->first();
         $toko = Toko::whereid($user->toko_id)->first();
         
-        if(empty($orderan_id) or $orderan->user_id !== $user->id){
+        if(empty($orderan_id) or $orderan->user_id !== $user->id or $ada_orderan < 1){
             return redirect('dashboard');
         }
 
+        $diskon = HistoryDiskon::get();
+        $special_price = HistorySpecialPrice::get();
+        $item_get = HistoryBuyGet::get();
+
         return view('user.struk',[
             'toko' => $toko,
+            'diskon' => $diskon,
+            'special_price' => $special_price,
+            'item_get' => $item_get,
             'orderan' => $orderan
         ]);
     }
@@ -180,6 +189,7 @@ class UserController extends Controller
                                 if($kelipatan_bawah >= 1){
                                     HistoryBuyGet::create([
                                         'barang_order_id' => $barang_order->id,
+                                        'item_buy_id' => $i->data_barang_id,
                                         'buy' => $i->buy,
                                         'get' => $i->get,
                                         'item_get_id' => $i->item_get_id
@@ -206,10 +216,13 @@ class UserController extends Controller
     public function create_member(Request $request){
         $user = Auth::user();
         $orderan_id = $request->input('orderan_id');
+        if(empty($orderan_id)){
+            return redirect('dashboard')->with('danger','Forbidden');
+        }
         return view('user.create-member',[
             'user' => $user,
             'orderan_id' => $orderan_id,
-            'title' => 'Create Member'
+            'title' => 'Member Baru'
         ]);
     }
 
@@ -228,6 +241,8 @@ class UserController extends Controller
             'nik' => $request->input('nik'),
             'email' => $request->input('email'),
         ]);
+
+        return redirect('dashboard/struk?orderan_id='.$orderan_id);
     }
 
     public function edit_basket(Request $request){
@@ -331,7 +346,7 @@ class UserController extends Controller
     public function edit(){
         $user = Auth::user();
 
-        return view('user.user-profile', [
+        return view('user-profile', [
             'title' => 'User Profile',
             'user' => $user
         ]);
@@ -340,11 +355,25 @@ class UserController extends Controller
     public function riwayat(Request $request){
         $user = Auth::user();
         $tanggal_observasi = $request->input('tanggal_observasi');
-        $orderan = Orderan::where('user_id',$user->id)->with('barang_orders')->get();
+        if(!$tanggal_observasi){
+            $orderan = Orderan::where('user_id',$user->id)->whereDate('created_at', Carbon::today()->toDateString())->with('barang_orders')->get();
+        }else{
+            $orderan = Orderan::where('user_id',$user->id)->whereDate('created_at', $tanggal_observasi)->with('barang_orders')->get();
+        }
+        $toko = Toko::whereid($user->id)->first();
+
+        $diskon = HistoryDiskon::get();
+        $special_price = HistorySpecialPrice::get();
+        $item_get = HistoryBuyGet::get();
 
         return view('user.riwayat', [
             'title' => 'Riwayat',
             'tanggal_observasi' => $tanggal_observasi,
+            'orderan' => $orderan,
+            'toko' => $toko,
+            'diskon' => $diskon,
+            'special_price' => $special_price,
+            'item_get' => $item_get,
             'user' => $user
         ]);
     }
@@ -352,9 +381,6 @@ class UserController extends Controller
     public function migrasi(){
         $user = Auth::user();
 
-        return view('user.migrasi', [
-            'title' => 'Migrasi',
-            'user' => $user
-        ]);
+        return redirect(route('dashboard'));
     }
 }

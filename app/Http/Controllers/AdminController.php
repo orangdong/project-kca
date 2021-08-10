@@ -11,6 +11,7 @@ use App\Models\DataBarang;
 use App\Models\HistoryExport;
 use App\Models\MetodePembayaran;
 use App\Models\User;
+use App\Models\Parcel;
 use Carbon\Carbon;
 use PhpParser\Node\Expr\FuncCall;
 
@@ -104,6 +105,22 @@ class AdminController extends Controller
         $barang->update($data);
 
         return back()->with('success', 'update barang success');
+    }
+
+    public function viewbarang(Request $request){
+        $user = Auth::user();
+        $toko_id = $request->input('id');
+        $toko = Toko::whereid($toko_id)->first();
+        $data_barang = DataBarang::where('toko_id',$toko_id)->get();
+        $parcel = Parcel::where('toko_id',$toko_id)->get();
+
+        return view('admin.view-barang',[
+            'title' => 'View Barang',
+            'data_barang' => $data_barang,
+            'parcel' => $parcel,
+            'toko' => $toko,
+            'user' => $user
+        ]);
     }
 
     public function editbarang(Request $request){

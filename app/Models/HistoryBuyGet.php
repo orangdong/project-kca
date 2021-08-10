@@ -16,6 +16,7 @@ class HistoryBuyGet extends Model
 
     protected $fillable = [
         'barang_order_id',
+        'item_buy_id',
         'buy',
         'get',
         'item_get_id'
