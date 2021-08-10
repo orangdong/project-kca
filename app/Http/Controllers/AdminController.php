@@ -7,9 +7,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Actions\Fortify\PasswordValidationRules;
+use App\Models\BuyGet;
 use App\Models\DataBarang;
+use App\Models\Diskon;
 use App\Models\HistoryExport;
 use App\Models\MetodePembayaran;
+use App\Models\SpecialPrice;
 use App\Models\User;
 use Carbon\Carbon;
 use PhpParser\Node\Expr\FuncCall;
@@ -101,7 +104,91 @@ class AdminController extends Controller
         if(!$barang){
             return back()->with('danger', 'pilih barang terlebih dahulu');
         }
+        $diskon = $request->input('diskon');
+        $diskon_until = $request->input('diskon_until');
+        $special_price = $request->input('special_price');
+        $special_until = $request->input('special_until');
+        //buyget
+        $buy = $request->input('buy');
+        $get = $request->input('get');
+        $item_get = $request->input('item_get_id');
+        $valid_until = $request->input('valid_until'); 
         $barang->update($data);
+
+        if($diskon){
+            $value = Diskon::where('data_barang_id', $barang->id)->first();
+            // return $value;
+            if(!$value){
+                if(!$diskon_until){
+                    return back()->with('danger', 'diskon until is required');
+                }
+                Diskon::create([
+                    'data_barang_id' => $barang->id,
+                    'diskon' => $diskon,
+                    'valid_until' => $diskon_until
+                ]);
+            }else{
+                if(!$diskon_until){
+                    return back()->with('danger', 'diskon until is required');
+                }
+                $value->update([
+                    'diskon' => $diskon,
+                    'valid_until' => $diskon_until
+                ]);
+            }
+        }
+        if($special_price){
+            $value1 = SpecialPrice::where('data_barang_id', $barang->id)->first();
+            // return $value;
+            if(!$value1){
+                if(!$special_until){
+                    return back()->with('danger', 'special until is required');
+                }
+                SpecialPrice::create([
+                    'data_barang_id' => $barang->id,
+                    'special_price' => $special_price,
+                    'valid_until' => $special_until
+                ]);
+            }else{
+                if(!$special_until){
+                    return back()->with('danger', 'special until is required');
+                }
+                $value1->update([
+                    'special_price' => $special_price,
+                    'valid_until' => $special_until
+                ]);
+            }
+        }
+        if($buy){
+            if(!$get){
+                return back()->with('danger', 'jumlah get is required');
+            }
+            if(!$item_get){
+                return back()->with('danger', 'item get is required');
+            }
+            if(!$valid_until){
+                return back()->with('danger', 'valid until is required');
+            }
+
+            $value2 = BuyGet::where('data_barang_id', $barang->id)->first();
+            // return $value;
+            if(!$value2){
+                BuyGet::create([
+                    'data_barang_id' => $barang->id,
+                    'buy' => $buy,
+                    'get' => $get,
+                    'item_get_id' => $item_get,
+                    'valid_until' => $valid_until
+                ]);
+            }else{
+                $value2->update([
+                    'buy' => $buy,
+                    'get' => $get,
+                    'item_get_id' => $item_get,
+                    'valid_until' => $valid_until
+                ]);
+            }
+        }
 
         return back()->with('success', 'update barang success');
     }
@@ -116,10 +203,11 @@ class AdminController extends Controller
         }
 
         $barang_id = $request->input('barang_id');
-        $barang = DataBarang::where([['id', $barang_id], ['toko_id', $id]])->first();
+        $barang = DataBarang::where([['id', $barang_id], ['toko_id', $id]])->with('buy_get', 'diskon', 'special_price')->first();
         $barangs = DataBarang::where('toko_id', $id)->get();
         $history_exports = HistoryExport::where('toko_id', $id)->get();
 
+        // return $barang;
         return view('admin.edit-barang', [
             'user' => $user,
             'toko' => $toko,
