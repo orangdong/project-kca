@@ -12,7 +12,7 @@
 		@endif
     </div>
     <div class="row">
-        <div class="col">
+        <div class="col-4">
             <div class="card card-body">
                 <form action="{{route('edit-barang-barcode')}}" method="post">
                     @csrf
@@ -82,7 +82,7 @@
                 
             </div>
         </div>
-        <div class="col">
+        <div class="col-8">
             <div class="card card-body">
                 <form action="{{route('edit-barang-form')}}" method="post">
                     @csrf
@@ -106,6 +106,111 @@
                     <div class="mb-10">
                         <label class="required form-label">Stok</label>
                         <input type="number" name="stok" class="form-control form-control-solid" value="{{$barang->stok}}" autocomplete="off" required />
+                    </div>
+                    <h2 class="mb-3">Promo</h2>
+                    <div class="mb-10">
+                        <div class="d-flex flex-row">
+                            <div class="d-flex flex-column w-100">
+                                <label class="required form-label">Diskon</label>
+                                <div class="input-group">
+                                    @if (!$barang->diskon)
+                                    <input type="number" name="diskon" class="form-control form-control-solid" autocomplete="off" />
+                                    @else
+                                    <input type="number" name="diskon" class="form-control form-control-solid" value="{{$barang->diskon->diskon}}" autocomplete="off" />
+                                    @endif
+                                    <span class="btn btn-secondary">%</span>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-column w-100">
+                                <label class="required form-label">Diskon Until</label>
+                                @if (!$barang->diskon)
+                                <input type="date" name="diskon_until" class="form-control form-control-solid ms-3"> 
+                                @else
+                                <input type="date" name="diskon_until" value="{{$barang->diskon->valid_until}}" class="form-control form-control-solid ms-3">
+                                @endif
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-10">
+                        <div class="d-flex flex-row">
+                            <div class="d-flex flex-column w-100">
+                                <label class="required form-label">Special Price</label>
+                                @if (!$barang->special_price)
+                                <input type="number" name="special_price" class="form-control form-control-solid" autocomplete="off" />
+                                @else
+                                <input type="number" name="special_price" class="form-control form-control-solid" value="{{$barang->special_price->special_price}}" autocomplete="off" />
+                                @endif
+                                
+                            </div>
+                            <div class="d-flex flex-column w-100">
+                                
+                                <label class="required form-label">Special Until</label>
+                                @if (!$barang->special_price)
+                                <input type="date" name="special_until" class="form-control form-control-solid ms-3">
+                                @else
+                                <input type="date" name="special_until" value="{{$barang->special_price->valid_until}}" class="form-control form-control-solid ms-3">
+                                @endif
+                                
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+                    <div class="mb-10 d-flex flex-row">
+                        <div class="d-flex flex-row me-3 justify-content-between col-4">
+                            <div class="d-flex flex-column w-100 me-3">
+                                <label class="required form-label">Jumlah buy</label>
+                                @if (!$barang->buy_get)
+                                <input type="number" name="buy" class="form-control form-control-solid" autocomplete="off" />
+                                @else
+                                <input type="number" value="{{$barang->buy_get->buy}}" name="buy" class="form-control form-control-solid" autocomplete="off" />
+                                @endif
+                                
+                            </div>
+                            <div class="d-flex flex-column w-100">
+                                <label class="required form-label">Jumlah get</label>
+                                @if (!$barang->buy_get)
+                                <input type="number" name="get" class="form-control form-control-solid" autocomplete="off" />
+                                @else
+                                <input type="number" name="get" value="{{$barang->buy_get->get}}" class="form-control form-control-solid" autocomplete="off" />
+                                @endif
+                                
+                            </div>
+                        </div>
+                        <div class="d-flex flex-row justify-content-between col-8">
+                            <div class="d-flex flex-column w-100">
+                                <label class="required form-label">Item get</label>
+                                <select name="item_get_id" data-control="select2" data-placeholder="-" class="form-select form-select-solid form-select-lg fw-bold select2-hidden-accessible">
+                                    @if (!$barang->buy_get)
+                                    <option value=""></option>
+                                    @foreach ($barangs as $item)
+                                        <option value="{{$item->id}}">{{$item->name}}</option>
+                                    @endforeach
+                                    @else
+                                    <option value="{{$barang->buy_get->item_get_id}}">
+                                    @foreach ($barangs->where('id', $barang->buy_get->item_get_id) as $b)
+                                        {{$b->name}}
+                                    @endforeach    
+                                    
+                                    </option>
+                                    @foreach ($barangs->where('id', '!=',$barang->buy_get->item_get_id) as $item)
+                                        <option value="{{$item->id}}">{{$item->name}}</option>
+                                    @endforeach
+                                    @endif
+                                    
+                                </select>
+                            </div>
+                            <div class="d-flex flex-column w-100 me-5">
+                                <label class="required form-label">Valid Until</label>
+                                @if (!$barang->buy_get)
+                                <input type="date" name="valid_until" class="form-control form-control-solid ms-3">
+                                @else
+                                <input type="date" name="valid_until" value="{{$barang->buy_get->valid_until}}" class="form-control form-control-solid ms-3">
+                                @endif
+                                
+                            </div>
+                        </div>
                     </div>
                     <input type="hidden" value="{{$barang->id}}" name="barang_id">
                     @else

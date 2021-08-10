@@ -15,8 +15,6 @@ class BuyGet extends Model
     ];
 
     protected $fillable = [
-        'name',
-        'lokasi',
-        'phone'
+        'data_barang_id', 'buy', 'get', 'item_get_id', 'valid_until'
     ];
 }

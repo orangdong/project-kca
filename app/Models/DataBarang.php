@@ -25,4 +25,16 @@ class DataBarang extends Model
         'stok'
     ];
 
+    public function buy_get(){
+        return $this->hasOne(BuyGet::class);
+    }
+
+    public function diskon(){
+        return $this->hasOne(Diskon::class);
+    }
+
+    public function special_price(){
+        return $this->hasOne(SpecialPrice::class);
+    }
+
 }
