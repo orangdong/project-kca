@@ -351,11 +351,15 @@ class AdminController extends Controller
         return redirect(route('edit-user').'?id='.$request->toko_id)->with('success','Ubah password berhasil');
     }
 
-    public function revenue(){
+    public function revenue(Request $request){
         $user = Auth::user();
+        $toko = Toko::whereid($request->input('toko_id'))->first();
+        $list_toko = Toko::get();
 
         return view('admin.revenue', [
             'user' => $user,
+            'toko' => $toko,
+            'list_toko' => $list_toko,
             'title' => 'Revenue'
         ]);
     }
