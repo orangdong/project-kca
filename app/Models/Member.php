@@ -22,4 +22,8 @@ class Member extends Model
         'nik',
         'email'
     ];
+
+    public function orderans(){
+        return $this->hasMany(Orderan::class);
+    }
 }

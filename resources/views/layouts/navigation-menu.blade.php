@@ -51,6 +51,11 @@
 													<span class="menu-title">Revenue</span>
 												</a>
 											</div>
+											<div class="menu-item me-lg-1">
+												<a class="menu-link py-3" href="/dashboard/member">
+													<span class="menu-title">Member</span>
+												</a>
+											</div>
 											@endif
 										</div>
 										<!--end::Menu-->

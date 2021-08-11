@@ -11,6 +11,7 @@ use App\Models\BuyGet;
 use App\Models\DataBarang;
 use App\Models\Diskon;
 use App\Models\HistoryExport;
+use App\Models\Member;
 use App\Models\MetodePembayaran;
 use App\Models\SpecialPrice;
 use App\Models\User;
@@ -30,6 +31,17 @@ class AdminController extends Controller
             'user' => $user,
             'tokos' => $tokos,
             'title' => 'Navigasi'
+        ]);
+    }
+
+    public function viewmember(Request $request){
+        $user = Auth::user();
+        $members = Member::withCount('orderans')->withSum('orderans', 'harga_total')->get();
+
+        return view('admin.view-member', [
+            'user' => $user,
+            'members' => $members,
+            'title' => 'Member'
         ]);
     }
 
