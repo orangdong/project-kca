@@ -16,7 +16,7 @@
     <form action="">
         <label class="form-label">Masukkan Tanggal Analisa</label>
         <div class="input-group mb-3">
-            <input class="form-control form-control-solid" placeholder="Pick date rage" id="kt_daterangepicker_3"/>
+            <input class="form-control form-control-solid" name="tanggal_observasi" placeholder="Pilih Tanggal" id="kt_datepicker_2"/>
             <div class="input-group-append">
                 <input type="submit" class="btn btn-success" value="Submit"/>
             </div>
@@ -30,12 +30,6 @@
     </ul>
 </div>
 <script>
-    $("#kt_daterangepicker_3").daterangepicker({
-        singleDatePicker: true,
-        showDropdowns: true,
-        minYear: 1990,
-        maxYear: parseInt(moment().format("YYYY"),10)
-    }
-);
+    $("#kt_datepicker_2").flatpickr();
 </script>
 @endsection('isi_halaman')

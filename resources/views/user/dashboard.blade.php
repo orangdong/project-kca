@@ -27,10 +27,9 @@
           <div class="w-100 ">
 						<select name="metode" required class="form-select form-select-solid" data-control="select2" data-placeholder="-" data-hide-search="true" tabindex="-1" aria-hidden="true">
 							<option value=""></option>
-							<option value="Tunai">Tunai</option>
-              <option value="GoPay">GoPay</option>
-							<option value="OVO">OVO</option>
-							<option value="QRIS">QRIS</option>
+              @foreach($metode_pembayaran as $mp)
+                <option value="{{ $mp->metode }}">{{ $mp->metode }}</option>
+              @endforeach
 						</select>
 					</div>
         </div>

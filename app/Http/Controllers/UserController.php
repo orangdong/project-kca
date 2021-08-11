@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Toko;
+use App\Models\MetodePembayaran;
 use App\Models\DataBarang;
 use App\Models\BarangOrder;
 use App\Models\Keranjang;
@@ -12,6 +13,7 @@ use App\Models\SpecialPrice;
 use App\Models\BuyGet;
 use App\Models\Member;
 use App\Models\Parcel;
+use App\Models\ParcelItem;
 use App\Models\HistoryDiskon;
 use App\Models\HistorySpecialPrice;
 use App\Models\HistoryBuyGet;
@@ -23,6 +25,7 @@ class UserController extends Controller
 {
     public function index(Request $request){
         $user = Auth::user();
+        $metode_pembayaran = MetodePembayaran::where('toko_id',$user->toko_id)->get();
         $phone_member = $request->input('phone_member');
         $member = Member::where('phone', $phone_member)->first();
         $keranjang = Keranjang::where('user_id', $user->id)->get();
@@ -34,6 +37,7 @@ class UserController extends Controller
         if(!$member){
             return view('user.dashboard', [
                 'user' => $user,
+                'metode_pembayaran' => $metode_pembayaran,
                 'title' => 'Dashboard',
                 'keranjang' => $keranjang,
                 'diskon' => $diskon,
@@ -43,6 +47,7 @@ class UserController extends Controller
         }else{
             return view('user.dashboard', [
                 'user' => $user,
+                'metode_pembayaran' => $metode_pembayaran,
                 'member' => $member,
                 'title' => 'Dashboard',
                 'keranjang' => $keranjang,
@@ -130,7 +135,7 @@ class UserController extends Controller
                 ]);
                 foreach($stok_parcel->parcel_items as $pi){
                     $barang = DataBarang::whereid($pi->data_barang_id)->first();
-                    $sisa_barang = $barang->stok - $pi->jumlah;
+                    $sisa_barang = $barang->stok - ($k->jumlah*$pi->jumlah);
                     DataBarang::where([['toko_id',$user->toko_id],['id',$pi->data_barang_id]])->update([
                         'stok' => $sisa_barang // Kurangi stok parcel items
                     ]);
@@ -361,6 +366,7 @@ class UserController extends Controller
             $orderan = Orderan::where('user_id',$user->id)->whereDate('created_at', $tanggal_observasi)->with('barang_orders')->get();
         }
         $toko = Toko::whereid($user->id)->first();
+        $metode_pembayaran = MetodePembayaran::where('toko_id', $user->toko_id)->get();
 
         $diskon = HistoryDiskon::get();
         $special_price = HistorySpecialPrice::get();
@@ -371,11 +377,57 @@ class UserController extends Controller
             'tanggal_observasi' => $tanggal_observasi,
             'orderan' => $orderan,
             'toko' => $toko,
+            'metode_pembayaran' => $metode_pembayaran,
             'diskon' => $diskon,
             'special_price' => $special_price,
             'item_get' => $item_get,
             'user' => $user
         ]);
+    }
+
+    public function edit_metode(Request $request){
+        $user = Auth::user();
+        $orderan_id = $request->input('orderan_id');
+        $metode = $request->input('metode');
+        Orderan::whereid($orderan_id)->update([
+            'metode' => $metode
+        ]);
+        return redirect(route('riwayat'))->with('success', 'Edit metode berhasil');
+    }
+
+    public function delete_orderan(Request $request){
+        $user = Auth::user();
+        $orderan_id = $request->input('orderan_id');
+        $parcel = Parcel::get();
+        $parcel_item = ParcelItem::get();
+        $data_barang = DataBarang::get();
+
+        $orderan = Orderan::where([['id',$orderan_id],['user_id', $user->id]])->with('barang_orders')->get();
+        foreach($orderan[0]->barang_orders as $ob){
+            if($ob->parcel == 1){
+                foreach($parcel->whereid($ob->data_barang_id) as $p){
+                    Parcel::whereid($ob->data_barang_id)->update([
+                        'stok' => $p->stok + $ob->jumlah
+                    ]);
+                    foreach($parcel_item->where('parcel_id',$p->id) as $pi){
+                        foreach($data_barang->whereid($pi->data_barang_id) as $di){ // 1x LOOP cari Data Barang
+                            DataBarang::whereid($pi->data_barang_id)->update([
+                                'stok' => $di->stok + ($ob->jumlah*$pi->jumlah)
+                            ]);
+                        }
+                    }
+                }
+            }else{
+                foreach($data_barang->where('id',$ob->data_barang_id) as $d){
+                    DataBarang::where('id', $ob->data_barang_id)->update([
+                        'stok' => $d->stok + $ob->jumlah
+                    ]);
+                }
+            }
+        }
+        Orderan::where([['id',$orderan_id],['user_id', $user->id]])->delete();
+
+        return redirect(route('riwayat'))->with('warning','Void berhasil');
     }
 
     public function migrasi(){
