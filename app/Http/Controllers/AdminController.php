@@ -201,6 +201,9 @@ class AdminController extends Controller
         $data_barang = DataBarang::where('toko_id',$toko_id)->get();
         $parcel = Parcel::where('toko_id',$toko_id)->get();
 
+        if(!$toko_id || !$toko){
+            return redirect(route('navigasi'))->with('danger', 'invalid toko');
+        }
         return view('admin.view-barang',[
             'title' => 'View Barang',
             'data_barang' => $data_barang,
