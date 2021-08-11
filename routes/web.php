@@ -63,6 +63,8 @@ Route::prefix('dashboard')
             Route::get('migrasi', [UserController::class, 'migrasi'])->name('migrasi');
             Route::get('create-member', [UserController::class, 'create_member'])->name('create-member');
             Route::post('insert-member', [UserController::class, 'insert_member'])->name('insert-member');
+            Route::get('delete-orderan', [UserController::class, 'delete_orderan'])->name('delete-orderan');
+            Route::post('edit-metode', [UserController::class, 'edit_metode'])->name('riwayat.edit-metode');
         });
         
         Route::get('user-profile', [UserController::class, 'edit'])->name('dashboard.profile');

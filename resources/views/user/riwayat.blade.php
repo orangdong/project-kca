@@ -1,5 +1,8 @@
 @extends('layouts.app')
 @section('isi_halaman')
+<link href="{{ asset('plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css"/>
+<script src="{{ asset('plugins/global/plugins.bundle.js') }}"></script>
+
 <?php $today = date("Y-m-d") ?>
 <div class="card card-body">
 <h2>Untuk {{ $toko->name }}</h2>
@@ -7,7 +10,7 @@
     <form action="{{ route('riwayat') }}" method="get">
         <label class="form-label">Tanggal Observasi</label>
         <div class="input-group mb-3">
-            <input class="form-control form-control-solid" name="tanggal_observasi" placeholder="Pick date rage" type="date" id="kt_daterangepicker_3"/>
+            <input class="form-control form-control-solid" name="tanggal_observasi" placeholder="Pilih Tanggal" id="kt_datepicker_2"/>
             <div class="input-group-append">
                 <input type="submit" class="btn btn-success" value="Submit"/>
             </div>
@@ -22,7 +25,9 @@
                         <button class="btn btn-link" style="color:#000000;" data-toggle="collapse" data-target="#collapse $order_id" aria-expanded="true" aria-controls="collapseOne">
                             ID Order: {{ $o->id }} // Kasir:  {{ $user->name }}
                         </button>
-                        
+                        @if($o->metode == "tunai" or $o->metode == "Tunai")
+                        <a href="{{ route('delete-orderan').'?orderan_id='.$o->id }}" onclick="return confirm('Yakin void transaksi?')" class="btn btn-sm btn-danger mb-5 mt-5" style="float:right;">Void</a>
+                        @endif
 
                     </div>
 
@@ -80,7 +85,21 @@
                                     <a style="float: right;" class="btn btn-success" href="{{ route('struk').'?orderan_id='.$o->id }}">Struk</a>
                                 </span>
                                 <br>
-                                <span>Metode: {{ $o->metode }}</span>
+                                @if($o->metode == "pending" or $o->metode == "Pending")
+                                    <form action="{{ route('riwayat.edit-metode') }}" method="post">
+                                        @csrf
+                                        <select class="form-select form-select-solid mb-5" name="metode" style="width:200px" >
+                                            <option value="{{ $o->metode }}">{{ $o->metode }}</option>
+                                            @foreach($metode_pembayaran as $tm)
+                                                <option value="{{ $tm->metode }}">{{ $tm->metode }}</option>
+                                            @endforeach
+                                        </select>
+                                        <input type="hidden" name="orderan_id" value="{{ $o->id }}">
+                                        <input type="submit" class="btn btn-sm btn-warning" value="Update">
+                                    </form>
+                                @else
+                                    <span>Metode: {{ $o->metode }}</span>
+                                @endif
 
                             </b>
 
@@ -92,13 +111,7 @@
 </div>
 
 <script>
-$("#kt_daterangepicker_3").daterangepicker({
-        singleDatePicker: true,
-        showDropdowns: true,
-        minYear: 1990,
-        maxYear: parseInt(moment().format("YYYY"),10)
-    }
-);
+$("#kt_datepicker_2").flatpickr();
 </script>
 
 @endsection('isi_halaman')
@@ -106,6 +119,6 @@ $("#kt_daterangepicker_3").daterangepicker({
 @section('isi_action')
 
     @if(!empty( $tanggal_observasi ))
-    <a class="btn btn-sm btn-info" href="{{ route('riwayat') }}">{{ $tanggal_observasi }}</a>
+    <a class="btn btn-sm btn-info" href="{{ route('riwayat') }}">Tinjau: {{ $tanggal_observasi }}</a>
     @endif
 @endsection('isi_action')

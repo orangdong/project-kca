@@ -19,4 +19,8 @@ class MetodePembayaran extends Model
         'metode'
     ];
 
+    public function toko(){
+        return $this->belongsTo(Toko::class);
+    }
+
 }
