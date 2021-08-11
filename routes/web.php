@@ -32,6 +32,7 @@ Route::prefix('dashboard')
         Route::middleware(['isAdmin'])->group(function(){
             Route::get('view-barang', [AdminController::class, 'viewbarang'])->name('view-barang');
             Route::get('member', [AdminController::class, 'viewmember'])->name('view-member');
+            Route::get('download-member', [AdminController::class, 'download_member'])->name('download-member');
             Route::get('edit-barang', [AdminController::class, 'editbarang'])->name('edit-barang');
             Route::post('edit-barang', [AdminController::class, 'edit_barang'])->name('edit-barang-form');
             Route::post('upload-csv', [AdminController::class, 'upload_csv'])->name('upload-csv');

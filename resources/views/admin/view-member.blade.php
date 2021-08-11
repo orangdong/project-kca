@@ -72,6 +72,6 @@
 @endsection('isi_halaman')
 
 @section('isi_action')
-<a href="#" class="btn btn-sm btn-primary">Download PDF</a>
+<a href="{{route('download-member')}}" class="btn btn-sm btn-primary">Download Member</a>
 <!-- Modal -->
 @endsection('isi_action')

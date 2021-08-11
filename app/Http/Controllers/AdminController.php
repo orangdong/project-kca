@@ -17,6 +17,9 @@ use App\Models\SpecialPrice;
 use App\Models\User;
 use App\Models\Parcel;
 use Carbon\Carbon;
+use App\Exports\MemberExport;
+use Maatwebsite\Excel\Facades\Excel;
+use PDF;
 use PhpParser\Node\Expr\FuncCall;
 
 class AdminController extends Controller
@@ -43,6 +46,11 @@ class AdminController extends Controller
             'members' => $members,
             'title' => 'Member'
         ]);
+    }
+
+    public function download_member(){
+        
+        return Excel::download(new MemberExport, 'member.xlsx');
     }
 
     public function upload_csv(Request $request){
